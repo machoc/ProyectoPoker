@@ -1,21 +1,57 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modelo;
 
-/**
- *
- * @author luisalejandro
- */
-public class Modelo {
+import java.util.Observable;
+import javax.swing.table.TableModel;
+import modelo.Jugador;
+import modelo.Jugadores;
+import modelo.JugadoresTablaModelo;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+/* La clase modelo almacena los datos de la aplicacion y informa a las ventanas para que se actualicen
+
+Creadores: Luis Alejandro Castaing.
+Pablo Campos
+
+Revisor: Jennifer Fuentes
+
+
+*/
+
+public class Modelo extends Observable{
+    //---------------METODOS------------------------
+    public Modelo(){
+        jugadores = new Jugadores();
+        modeloTabla = new JugadoresTablaModelo(jugadores);
     }
     
+    public void agregarJugadorMesa(Jugador nuevoJugador){
+        jugadores.agregarJugadorMesa(nuevoJugador);
+        actualizar(null);
+    }
+    
+    public void cargarJugadores(){
+        jugadores.guardarJugadores();
+        actualizar(null);
+    }
+    
+    public TableModel modeloTabla(){
+        return modeloTabla;
+    }
+    
+    public void actualizar(Object evento){
+        setChanged();
+        notifyObservers(evento);
+    }
+  
+    
+    //----------------------------------------------
+    
+    
+    
+    //----------------ATRIBUTOS----------------------
+    private Jugadores jugadores;
+    private JugadoresTablaModelo modeloTabla;
+    
+    public static final int MAX_JUGADORES = 3;
+    
+    //----------------------------------------------
 }
