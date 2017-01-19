@@ -92,7 +92,7 @@ public class Servidor {
                srv.close();
                for(GestorClientes cliente: clientes){
                    if(cliente!=null){
-                       //cliente.cerrarGestorCliente();
+                       cliente.cerrarGestorCliente();
                    }
                 }
                 

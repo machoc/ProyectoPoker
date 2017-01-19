@@ -38,6 +38,18 @@ public class GestorClientes implements Observer,Runnable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    public void cerrarGestorCliente (){
+     try {
+         salida.close();
+         entrada.close();
+         socket.close();
+        
+     }catch (Exception ex){
+        System.err.println(ex.getMessage());
+     }
+    }
+    
+    
     //Atributos
     private Servidor gestorPrincipal;
     private InetAddress direccionCliente;
