@@ -1,21 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package servidor;
 
-/**
- *
- * @author luisalejandro
- */
-public class Servidor {
+import java.net.ServerSocket;
+import java.util.ArrayList;
+import modelo.Modelo;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
-    }
+
+public class Servidor {
+    
+    //Atributos
+    private Modelo datos;
+    private Thread hiloAtencion;
+    private ServerSocket srv;
+    private ArrayList<GestorClientes> clientes;
+    private int numClientes;
+    private static Servidor instancia = null;
+    
     
 }

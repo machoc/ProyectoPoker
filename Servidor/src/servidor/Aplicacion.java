@@ -1,12 +1,13 @@
 
-package cliente;
+package servidor;
 
 
-public class Cliente {
+public class Aplicacion {
 
     
     public static void main(String[] args) {
         
     }
+    
     
 }
