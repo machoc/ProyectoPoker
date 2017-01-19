@@ -1,0 +1,445 @@
+
+package proyectopoker.vista;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import proyectopoker.control.Control;
+
+/* Esta clase es donde se ubican las configuraciones de la ventana principal del juego.
+
+Creadores: Luis Alejandro Castaing.
+Pablo Campos
+
+Revisor: Jennifer Fuentes
+
+
+*/
+
+public class VentanaPrincipal extends JFrame implements Observer {
+
+    
+    //--------METODOS-----------------------------------------------------
+    
+     /* Constructor de la clase donde se le configura el nombre a la pantalla
+    y se invocan los metodos para configurar la ventana */
+    public VentanaPrincipal(JFrame ventTab ,Control cont) {
+        super("POKER");
+        ventanaTabla=ventTab;
+        control=cont;
+        configuracionInicial();
+        agregarComponentes(this.getContentPane());
+        agregarEventos();
+        control.registrar(this);
+        
+    }
+/* Se le configuran las caracteristicas de la pantalla
+   */
+    private void configuracionInicial(){
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.setSize(1100,800);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);  
+        
+    }
+    /*metodo que sirve para cerrar por completo la aplicacion
+    */
+    private void cerrarAplicacion(){
+        if(JOptionPane.showConfirmDialog(this, "Desea cerrar la aplicacion","Confirmar",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION)
+        {
+            System.exit(0);
+        }
+    }
+    
+/* se agregan y configuran los componentes de la ventana
+    */
+    private void agregarComponentes(Container c){
+        c.setLayout(new BorderLayout());
+        
+        panelPrincipal= new JPanelConFondo("../vista/imagenes/fondo1.jpg");
+            
+        panelPrincipal.setLayout(new BorderLayout());
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(0,50,0,50));
+        c.add(panelPrincipal,BorderLayout.CENTER);
+        
+        panelSuperior=new JPanel();
+        panelSuperior.setOpaque(false);
+        
+        panelPrincipal.add(panelSuperior,BorderLayout.NORTH);
+        
+        
+        panelInferior = new JPanel();
+        panelInferior.setLayout(new BorderLayout());
+        panelInferior.setOpaque(false);
+        panelInferior.setPreferredSize(new Dimension(1000,100));
+        panelPrincipal.add(panelInferior,BorderLayout.SOUTH);
+        
+        
+        panelCentral=new JPanel();
+        panelCentral.setLayout(new BorderLayout());
+        panelCentral.setOpaque(false);
+        panelPrincipal.add(panelCentral,BorderLayout.CENTER);
+        
+        
+        panelDerecho=new JPanel();
+        panelDerecho.setOpaque(false);
+        panelDerecho.setPreferredSize(new Dimension(200,700));
+        panelDerecho.setLayout(new GridLayout(3,1));
+        panelPrincipal.add(panelDerecho,BorderLayout.EAST);
+        
+        panelIzquierdo=new JPanel();
+        panelIzquierdo.setOpaque(false);
+        panelIzquierdo.setPreferredSize(new Dimension(200,700));
+        panelIzquierdo.setLayout(new GridLayout(3,1));
+        panelPrincipal.add(panelIzquierdo,BorderLayout.WEST);
+        
+        
+        menu=new JMenuBar();
+        menuArchivo=new JMenu("ARCHIVO");
+        menuArchivoSalir=new JMenuItem("SALIR");
+        menuArchivo.add(menuArchivoSalir);
+        menu.add(menuArchivo);
+        menuPartida=new JMenu("PARTIDA");
+        menuPartidaNueva=new JMenuItem("NUEVA");
+        menuPartidaAbandonar=new JMenuItem("ABANDONAR");
+        menuPartidaPosiciones=new JMenuItem("VER POSICIONES");
+        menuPartida.add(menuPartidaNueva);
+        menuPartida.add(menuPartidaPosiciones);
+        menuPartida.add(menuPartidaAbandonar);
+        menu.add(menuPartida);
+        menuConfiguracion=new JMenu("CONFIGURACION");
+        menu.add(menuConfiguracion);
+        menuAyuda=new JMenu("AYUDA");
+        menuAcerca=new JMenuItem("ACERCA");
+        menuHelp=new JMenuItem("AYUDA");
+        menuAyuda.add(menuHelp);
+        menuAyuda.add(menuAcerca);
+        menu.add(menuAyuda);
+        
+        this.setJMenuBar(menu);
+        
+        panelJugadores = new JPanel();
+       // panelJugadores.setOpaque(false);
+        //panelSuperior.add(panelJugadores);
+
+  
+       JPanel panelCentralSuperior = new JPanel(new GridLayout(1,3));
+       panelCentralSuperior.setOpaque(false);
+
+       
+       
+       
+       panelJugador3=new JPanel(new GridLayout(2,1));
+       panelJugador3.setOpaque(false);
+       panelJugador3Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
+       panelJugador3Info .setLayout(new BorderLayout());
+       panelJugador3Info.setOpaque(false);
+       panelJugador3Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
+       labNombreJugador3=new JLabel("NOMBRE",JLabel.CENTER);
+       labApuestaJugador3=new JLabel("APUESTA",JLabel.CENTER);
+       panelJugador3Info.add(labApuestaJugador3,BorderLayout.SOUTH);
+       panelJugador3Info.add(labNombreJugador3,BorderLayout.CENTER);
+       panelJugador3Cartas = new JPanel();
+       panelJugador3Cartas.setOpaque(false);
+       panelJugador3.add(panelJugador3Info);
+       panelJugador3.add(panelJugador3Cartas);
+       cartasJug3=new ArrayList<>();
+       for(int i = 0; i < 2; i++){
+           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
+           ImageIcon icon = new ImageIcon(url);
+           cartasJug3.add(new JLabel());
+           cartasJug3.get(i).setIcon(icon);
+           panelJugador3Cartas.add( cartasJug3.get(i));
+       }
+       
+       panelJugador4=new JPanel(new GridLayout(2,1));
+       panelJugador4.setOpaque(false);
+       panelJugador4Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
+       panelJugador4Info .setLayout(new BorderLayout());
+       panelJugador4Info.setOpaque(false);
+       panelJugador4Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
+       labNombreJugador4=new JLabel("NOMBRE",JLabel.CENTER);
+       labApuestaJugador4=new JLabel("APUESTA",JLabel.CENTER);
+       panelJugador4Info.add(labApuestaJugador4,BorderLayout.SOUTH);
+       panelJugador4Info.add(labNombreJugador4,BorderLayout.CENTER);
+       panelJugador4Cartas = new JPanel();
+       panelJugador4Cartas.setOpaque(false);
+       panelJugador4.add(panelJugador4Info);
+       panelJugador4.add(panelJugador4Cartas);
+       cartasJug4=new ArrayList<>();
+       for(int i = 0; i < 2; i++){
+           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
+           ImageIcon icon = new ImageIcon(url);
+           cartasJug4.add(new JLabel());
+           cartasJug4.get(i).setIcon(icon);
+           panelJugador4Cartas.add( cartasJug4.get(i));
+       }
+       
+       panelJugador5=new JPanel(new GridLayout(2,1));
+       panelJugador5.setOpaque(false);
+       panelJugador5Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
+       panelJugador5Info .setLayout(new BorderLayout());
+       panelJugador5Info.setOpaque(false);
+       panelJugador5Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
+       labNombreJugador5=new JLabel("NOMBRE",JLabel.CENTER);
+       labApuestaJugador5=new JLabel("APUESTA",JLabel.CENTER);
+       panelJugador5Info.add(labApuestaJugador5,BorderLayout.SOUTH);
+       panelJugador5Info.add(labNombreJugador5,BorderLayout.CENTER);
+       panelJugador5Cartas = new JPanel();
+       panelJugador5Cartas.setOpaque(false);
+       panelJugador5.add(panelJugador5Info);
+       panelJugador5.add(panelJugador5Cartas);
+       cartasJug5=new ArrayList<>();
+       for(int i = 0; i < 2; i++){
+           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
+           ImageIcon icon = new ImageIcon(url);
+           cartasJug5.add(new JLabel());
+           cartasJug5.get(i).setIcon(icon);
+           panelJugador5Cartas.add( cartasJug5.get(i));
+       }
+       
+       
+        JPanel panelIzquierdoInferior = new JPanel();
+        panelIzquierdoInferior.setOpaque(false);
+        
+        panelIzquierdo.add(panelIzquierdoInferior);
+        
+       panelCentralSuperior.add(panelJugador3);
+       panelCentralSuperior.add(panelJugador4);
+       panelCentralSuperior.add(panelJugador5);
+       
+       JPanel panelDerechoInferior = new JPanel();
+       panelDerechoInferior.setOpaque(false);
+        
+        panelDerecho.add(panelDerechoInferior);
+        Font font = new Font(Font.SANS_SERIF,Font.BOLD,20);
+        labBoteMesa=new JLabel("$1000");
+        labBoteMesa.setFont(font);
+        labBoteMesa.setForeground(Color.WHITE);
+        panelDerechoInferior.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+       
+        JLabel bote=new JLabel("Bote: ");
+        bote.setFont(font);
+        bote.setForeground(Color.WHITE);
+        panelDerechoInferior.add(bote);
+        panelDerechoInferior.add(labBoteMesa);
+       
+       JPanel panelCentralInferior = new JPanel();
+       panelCentralInferior.setOpaque(false);
+       
+       JPanel panelCartasCentrales = new JPanel(new GridLayout(3,1));
+       panelCartasCentrales.setOpaque(false);
+       JPanel panelCartasCentral = new JPanel();
+       panelCartasCentral.setOpaque(false);
+       panelCartasCentral.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+       cartasCentrales = new ArrayList<>();
+       for(int i = 0; i < 5; i++){
+           URL url = getClass().getResource("../vista/imagenes/Cartas/10Corazon.png");  
+           ImageIcon icon = new ImageIcon(url);
+           cartasCentrales.add(new JLabel());
+           cartasCentrales.get(i).setIcon(icon);
+           panelCartasCentral.add( cartasCentrales.get(i));
+       }
+       panelCartasCentrales.add(panelCentralSuperior);
+       panelCartasCentrales.add(panelCartasCentral);
+       panelCartasCentrales.add(panelCentralInferior);
+       panelCentral.add(panelCartasCentrales,BorderLayout.CENTER);
+        
+        panelBotones = new JPanel();
+        panelBotones.setOpaque(false);
+       
+        
+        btnNoIr = new JButton("NO IR");
+        btnNoIr.setForeground(Color.red);
+        panelBotones.add(btnNoIr);
+        
+        btnPasar = new JButton("PASAR");
+        btnPasar.setForeground(Color.red);
+        panelBotones.add(btnPasar);
+        
+        btnApostar = new JButton("APOSTAR");
+        btnApostar.setForeground(Color.red);
+        panelBotones.add(btnApostar);
+        
+        sliderApostar = new JSlider();
+        panelBotones.add(sliderApostar);
+        txtCantidadApuesta= new JTextField(5);
+         panelBotones.add(txtCantidadApuesta);
+        panelInferior.add(panelBotones,BorderLayout.CENTER);
+        
+        
+        
+    }
+    /* Se agregan y configuran los listeners de los componentes de la ventana
+    que responderan a los eventos generados por el usuario*/
+    public void agregarEventos(){
+         this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e){
+                cerrarAplicacion();
+            }
+        });
+         
+         menuArchivoSalir.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                cerrarAplicacion();
+            }});
+         
+         final ImageIcon imagen = new ImageIcon(getClass().getResource("../vista/imagenes/poker_jugadas.png")); 
+        menuHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null,imagen,"JUGADAS",JOptionPane.INFORMATION_MESSAGE);
+            }
+        }); 
+        
+         menuPartidaPosiciones.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                ventanaTabla.setVisible(true);
+            }});
+         
+         btnPasar.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent ae) {
+                 
+             }
+         });
+         
+         btnNoIr.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent ae) {
+                 
+             }
+         });
+         
+         btnApostar.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent ae) {
+                 
+             }
+         }); 
+    }
+    /*hace visible esta ventana*/
+    public void mostrar(){
+        
+        this.setVisible(true);
+    }
+    
+    public ImageIcon buscarImagenes(String palo, String valor){
+       return new ImageIcon(getClass().getResource("../vista/imagenes/Cartas/"+valor+palo+".png"));  
+    }
+    
+
+    /* Metodo actualizar que se sobreescribe de la interfaz observer*/
+    @Override
+    public void update(Observable mod, Object obj) {
+        
+    }
+    
+    //---------------------------------------------------------------------------
+    
+    
+    
+    //--------ATRIBUTOS------------------------------------------------------------
+    private Control control;
+    private JPanel panelPrincipal;
+    private JPanel panelSuperior;
+    private JPanel panelCentral;
+    private JPanel panelInferior;
+    private JPanel panelDerecho;
+    private JPanel panelIzquierdo;
+    private JPanel panelJugadores;
+    private JPanel panelBotones;
+    private ArrayList<JLabel> cartasCentrales;
+    private JPanel panelJugador1;
+    private JPanel panelJugador1Info;
+    private JLabel labNombreJugador1;
+    private JLabel labApuestaJugador1;
+    private JPanel panelJugador1Cartas;
+    private JPanel panelJugador2;
+    private JPanel panelJugador2Info;
+    private JLabel labNombreJugador2;
+    private JLabel labApuestaJugador2;
+    private JPanel panelJugador2Cartas;
+    private JPanel panelJugador3;
+    private JPanel panelJugador3Info;
+    private JLabel labNombreJugador3;
+    private JLabel labApuestaJugador3;
+    private JPanel panelJugador3Cartas;
+    private JPanel panelJugador4;
+    private JPanel panelJugador4Info;
+    private JLabel labNombreJugador4;
+    private JLabel labApuestaJugador4;
+    private JPanel panelJugador4Cartas;
+    private JPanel panelJugador5;
+    private JPanel panelJugador5Info;
+    private JLabel labNombreJugador5;
+    private JLabel labApuestaJugador5;
+    private JPanel panelJugador5Cartas;
+    private JPanel panelJugador6;
+    private JPanel panelJugador6Info;
+    private JLabel labNombreJugador6;
+    private JLabel labApuestaJugador6;
+    private JPanel panelJugador6Cartas;
+    private JPanel panelJugador7;
+    private JPanel panelJugador7Info;
+    private JLabel labNombreJugador7;
+    private JLabel labApuestaJugador7;
+    private JPanel panelJugador7Cartas;
+    private ArrayList<JLabel> cartasJug1;
+    private ArrayList<JLabel> cartasJug2;
+    private ArrayList<JLabel> cartasJug3;
+    private ArrayList<JLabel> cartasJug4;
+    private ArrayList<JLabel> cartasJug5;
+    private ArrayList<JLabel> cartasJug6;
+    private ArrayList<JLabel> cartasJug7;
+    
+    private JMenuBar menu;
+    private JMenuItem menuArchivo;
+    private JMenuItem menuArchivoSalir;
+    private JMenuItem menuPartida;
+    private JMenuItem menuPartidaNueva;
+    private JMenuItem menuPartidaAbandonar;
+    private JMenuItem menuPartidaPosiciones;
+    private JMenuItem menuConfiguracion;
+    private JMenuItem menuAyuda;
+    private JMenuItem menuAcerca;
+    private JMenuItem menuHelp;
+    
+    private JButton btnNoIr;
+    private JButton btnPasar;
+    private JButton btnApostar;
+    private JTextField txtCantidadApuesta;
+    private JSlider sliderApostar;
+    private JLabel labBoteMesa;
+    private JFrame ventanaTabla;
+    
+    //---------------------------------------------------------------------------
+    
+}
