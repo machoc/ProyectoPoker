@@ -62,7 +62,7 @@ public class Cliente implements Runnable {
                  System.out.println("Iniciamos:");
                  e = (Evento)entrada.readObject(); 
                  leerTurnoCliente(e);
-                 leerPuntosCliente(e);
+                 //leerPuntosCliente(e);
                  Thread.sleep (15);
             }
         }
@@ -80,16 +80,16 @@ public class Cliente implements Runnable {
                 System.out.println(numCliente);
                 
                 if(numCliente.equals("3")){
-                    jugador.obtenerEtqJugador1().setText("Jugador# 3:");
+                   /* jugador.obtenerEtqJugador1().setText("Jugador# 3:");
                     jugador.obtenerEtqJugador2().setText("Jugador# 1:");
-                    jugador.obtenerEtqJugador3().setText("Jugador# 2:");
+                    jugador.obtenerEtqJugador3().setText("Jugador# 2:");*/
                     
                 }
                 
                 if(numCliente.equals("2")){
-                    jugador.obtenerEtqJugador1().setText("Jugador# 2:");
+                    /*jugador.obtenerEtqJugador1().setText("Jugador# 2:");
                     jugador.obtenerEtqJugador2().setText("Jugador# 1:");
-                    jugador.obtenerEtqJugador3().setText("Jugador# 3:");
+                    jugador.obtenerEtqJugador3().setText("Jugador# 3:");*/
                     
                 }        
                 leer();
@@ -108,7 +108,7 @@ public class Cliente implements Runnable {
                 turnoCliente = e.getMensaje();
                 
                 if(turnoCliente.equals("turno")){
-                    jugador.obtenerBtnJugar().setEnabled(true);                    
+                    //jugador.obtenerBtnJugar().setEnabled(true);                    
                     turnoCliente = "";
                 }
                 

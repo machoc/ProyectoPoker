@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
+import modelo.Evento;
 
 
 public class GestorClientes implements Observer,Runnable {
@@ -26,6 +27,19 @@ public class GestorClientes implements Observer,Runnable {
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
+    }
+    
+    public void escribirEntrada(Evento e){
+        try{
+            salida.writeObject(e);
+        }
+        catch(Exception ex){
+            System.err.println(ex.getMessage());
+        }
+    }
+    
+    public void leerEntrada(){
+        
     }
 
     @Override

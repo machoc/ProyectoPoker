@@ -7,6 +7,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Observer;
 import javax.swing.JOptionPane;
+import modelo.Evento;
 import modelo.Modelo;
 import protocolo.Protocolo;
 
@@ -27,7 +28,7 @@ public class Servidor {
         hiloAtencion = new Thread(new Runnable() {
             @Override
             public void run() {
-                
+                atenderClientes();
             }
         });
         hiloAtencion.start();
@@ -71,6 +72,8 @@ public class Servidor {
     }
      
      public void controlarTurnos(){
+        Evento e = null;
+        
          
      }
      
