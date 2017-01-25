@@ -9,16 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Observable;
-import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import proyectopoker.control.Control;
-import proyectopoker.modelo.Jugador;
+import modelo.Jugador;
+
 
 /* Esta clase es la que iniciara el juego, el jugador necesitara ingresar su nombre
 su nickname y la cantidad de dinero con la que quiere ingresar a la mesa
@@ -37,10 +35,9 @@ public class VentanaInicio extends JFrame  {
     /* El constructor de la clase en donde se invocan los metodos para ajustar la pantalla
     agregar componentes y tambien el metodo donde se agregan los eventos*/
     
-    public VentanaInicio(JFrame ventPrinc, Control cont) {
+    public VentanaInicio(VentanaPrincipal principal) {
         super("Iniciar");
-        ventanaPrincipal=ventPrinc;
-        gestorPrincipal=cont;
+        ventPrincipal=principal;
         this.ajustarComponentes(this.getContentPane());
         this.ajustarPantalla();
         this.agregarEventos();
@@ -116,7 +113,6 @@ public class VentanaInicio extends JFrame  {
     
     /* pone la pantalla visible */
     public void mostrar(){
-        gestorPrincipal.cargarjugadores();
         this.setVisible(true);
     }
     /* La pantalla desaparece para continuar con el juego */
@@ -147,13 +143,29 @@ public class VentanaInicio extends JFrame  {
 
            @Override
            public void actionPerformed(ActionEvent ae) {
-             String nombre = txtNombre.getText();
-             String nickname = txtNickname.getText();
-             Double dinero = Double.parseDouble(txtDinero.getText());
-             Jugador nuevoJugador = new Jugador(nombre, nickname, dinero);
-             gestorPrincipal.agregarJugador(nuevoJugador);
-             setVisible(false);
-             ventanaPrincipal.setVisible(true);
+             String nombre;
+             String nickname ;
+             Double dinero ;
+             if(txtNombre.getText() !="")
+                 nombre = txtNombre.getText();
+             else
+                 nombre="Anonimo";
+             if(txtNickname.getText()!="")
+             nickname = txtNickname.getText();
+             else 
+                 nickname="Desconocido";
+           
+              Jugador jugAux = new Jugador(nombre, nickname);
+     //        gestorPrincipal.agregarJugador(nuevoJugador);
+             ocultar();
+             ventPrincipal.mostrar();
+            ventPrincipal.mandarDatosCliente(jugAux);
+             
+             
+             
+             
+             
+           
            }
        });
     }
@@ -164,9 +176,11 @@ public class VentanaInicio extends JFrame  {
             System.exit(0);
         }
     }
-     
+    
+    
+    
     //Atributos
-    private Control gestorPrincipal;
+   
     
     private JPanel panelPrincipal;
     
@@ -180,7 +194,7 @@ public class VentanaInicio extends JFrame  {
     
     private JButton btnIngresarMesa;
     private JButton btnCancelar;
-    private JFrame ventanaPrincipal;
+    private VentanaPrincipal ventPrincipal;
 
   
   

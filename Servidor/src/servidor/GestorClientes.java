@@ -38,18 +38,102 @@ public class GestorClientes implements Observer,Runnable {
         }
     }
     
+    public void setearModeloTabla(Object modTabla){
+        Evento e = new Evento(++nEvento,"",modTabla);
+        escribirEntrada(e);
+    }
+    
     public void leerEntrada(){
         
     }
 
+     public Observer leerVentanaTabla(){
+        Evento e = null;
+        Observer ventTabla =null;
+        try {
+              e =  (Evento)entrada.readObject();
+              ventTabla= (Observer)e.getInfo();        
+              System.out.println("Leyendo Observer Ventana de Cliente"+nCliente);
+                           
+        } catch (ClassNotFoundException ex) {
+                    
+                } 
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return ventTabla;
+    }
+     
+     public Evento leerAccionCliente(){
+        Evento e = null;
+        try {
+              e =  (Evento)entrada.readObject();
+                  System.out.println("Leyendo Accion de Cliente "+nCliente);
+                
+         
+                           
+        } catch (ClassNotFoundException ex) {
+                    
+                } 
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return e;
+    }
+     
+      public Object leerDatosJugador(){
+        Evento e = null;
+        try {
+              e =  (Evento)entrada.readObject();
+              System.out.println("Leyendo Datos Jugador de Cliente"+nCliente);
+                           
+        } catch (ClassNotFoundException ex) {
+                    
+                } 
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return e.getInfo();
+    }
+
     @Override
-    public void update(Observable o, Object arg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void update(Observable mod, Object objeto) {
+     
+        if(objeto instanceof String){
+           switch ((String)objeto){
+              
+               
+               case "Apostar":{
+                   String mensaje ="El Jugador Aposto";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                   
+               }
+               break;
+               
+               case "Pasar":{
+                   String mensaje ="El  Jugador Paso";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                
+               }
+               break;    
+                       
+                case "NoIr":{
+                   String mensaje ="El Jugador no va ir";
+                  escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+               }
+               break; 
+                    
+           }
+        }
+           
+    
     }
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String numCl = String.valueOf(nCliente);
+         Evento e =  new Evento(++nEvento,numCl, null); 
+         escribirEntrada(e);
     }
     
     public void cerrarGestorCliente (){
@@ -63,8 +147,28 @@ public class GestorClientes implements Observer,Runnable {
      }
     }
     
+    public void escribirTerminarTurno(){
+        Evento e = null;
+        try {
+          e = new Evento(++nEvento,"Terminar",null);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+    
+     public int getnEvento() {
+        return nEvento;
+    }    
+
+    public int getnCliente() {
+        return nCliente;
+    }
+    
     
     //Atributos
+    public static boolean aux = true;
     private Servidor gestorPrincipal;
     private InetAddress direccionCliente;
     private ObjectOutputStream salida;

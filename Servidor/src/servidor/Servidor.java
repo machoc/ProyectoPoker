@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Observer;
 import javax.swing.JOptionPane;
 import modelo.Evento;
+import modelo.Jugador;
 import modelo.Modelo;
 import protocolo.Protocolo;
 
@@ -54,7 +55,9 @@ public class Servidor {
                     registrar(nuevoCliente);
                     Thread hiloCliente= new  Thread  (nuevoCliente);
                     hiloCliente.start();
-                    
+                   // agregarJugador(nuevoCliente.leerDatosJugador());
+                   // nuevoCliente.setearModeloTabla(datos.modeloTabla());
+                    //registrar((Observer)nuevoCliente.leerVentanaTabla());
                         
                 } catch (SocketTimeoutException e) {
                     // No se ha conectado ningún cliente.
@@ -73,8 +76,32 @@ public class Servidor {
      
      public void controlarTurnos(){
         Evento e = null;
+        Evento apuesta= null;
+        boolean aux=true;
+        for(GestorClientes cliente: clientes){
+            e = new Evento(cliente.getnEvento(),"turno",null);
+            cliente.escribirEntrada(e);
+//         if(cliente.aux){
+//            // agregarJugador(cliente.leerDatosJugador());
+//             cliente.setearModeloTabla(datos.modeloTabla());
+//              registrar((Observer)cliente.leerVentanaTabla());
+//              cliente.aux = false;
+//         }
+            apuesta= cliente.leerAccionCliente();
+            if(apuesta.getMensaje()=="Pasar")
+                datos.pasar(apuesta);
+            else if(apuesta.getMensaje()=="NoIr")
+                datos.noIr(apuesta);
+            else if(apuesta.getMensaje()=="Apostar")
+                datos.apostar(apuesta);
+            
+           cliente.escribirTerminarTurno();
+    }
         
-         
+     }
+     
+     public void agregarJugador(Object jug){
+         datos.agregarJugadorMesa((Jugador)jug);
      }
      
       public void eliminarClientes() {

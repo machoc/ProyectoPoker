@@ -28,7 +28,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import proyectopoker.control.Control;
+import modelo.Jugador;
+import proyectopoker.Cliente;
+
+
 
 /* Esta clase es donde se ubican las configuraciones de la ventana principal del juego.
 
@@ -40,22 +43,20 @@ Revisor: Jennifer Fuentes
 
 */
 
-public class VentanaPrincipal extends JFrame implements Observer {
+public class VentanaPrincipal extends JFrame {
 
     
     //--------METODOS-----------------------------------------------------
     
      /* Constructor de la clase donde se le configura el nombre a la pantalla
     y se invocan los metodos para configurar la ventana */
-    public VentanaPrincipal(JFrame ventTab ,Control cont) {
-        super("POKER");
+    public VentanaPrincipal(VentanaTablaJugadores ventTab) {
+        super("POKER"); 
         ventanaTabla=ventTab;
-        control=cont;
         configuracionInicial();
         agregarComponentes(this.getContentPane());
         agregarEventos();
-        control.registrar(this);
-        
+      
     }
 /* Se le configuran las caracteristicas de la pantalla
    */
@@ -74,6 +75,21 @@ public class VentanaPrincipal extends JFrame implements Observer {
             System.exit(0);
         }
     }
+    
+     public void conectarse(){
+          cliente= new Cliente (this,ventanaInicio);
+           hiloCliente= new Thread( cliente);
+           hiloCliente.start();
+    }
+     
+     public void mandarDatosCliente(Jugador j){
+         cliente.recibirDatosCliente(j);
+     }
+     
+     public VentanaTablaJugadores mandarVentTabla(){
+         return ventanaTabla;
+     }
+     
     
 /* se agregan y configuran los componentes de la ventana
     */
@@ -275,14 +291,17 @@ public class VentanaPrincipal extends JFrame implements Observer {
         
         btnNoIr = new JButton("NO IR");
         btnNoIr.setForeground(Color.red);
+        btnNoIr.setEnabled(false);
         panelBotones.add(btnNoIr);
         
         btnPasar = new JButton("PASAR");
         btnPasar.setForeground(Color.red);
+        btnPasar.setEnabled(false);
         panelBotones.add(btnPasar);
         
         btnApostar = new JButton("APOSTAR");
         btnApostar.setForeground(Color.red);
+        btnApostar.setEnabled(false);
         panelBotones.add(btnApostar);
         
         sliderApostar = new JSlider();
@@ -327,28 +346,40 @@ public class VentanaPrincipal extends JFrame implements Observer {
          btnPasar.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent ae) {
-                 
+                 cliente.pasar();
              }
          });
          
          btnNoIr.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent ae) {
-                 
+                cliente.noIr(labApuestaJugador3.getText()); 
              }
          });
          
          btnApostar.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent ae) {
-                 
+                 cliente.apostar(labApuestaJugador3.getText());
              }
          }); 
     }
     /*hace visible esta ventana*/
     public void mostrar(){
-        
+        conectarse();
         this.setVisible(true);
+    }
+    
+    public void habilitarBotones(){
+    btnNoIr.setEnabled(true);
+    btnPasar.setEnabled(true);
+    btnApostar.setEnabled(true);
+    }
+    
+    public void deshabilitarBotones(){
+    btnNoIr.setEnabled(false);
+    btnPasar.setEnabled(false);
+    btnApostar.setEnabled(false);
     }
     
     public ImageIcon buscarImagenes(String palo, String valor){
@@ -356,18 +387,13 @@ public class VentanaPrincipal extends JFrame implements Observer {
     }
     
 
-    /* Metodo actualizar que se sobreescribe de la interfaz observer*/
-    @Override
-    public void update(Observable mod, Object obj) {
-        
-    }
     
     //---------------------------------------------------------------------------
     
     
     
     //--------ATRIBUTOS------------------------------------------------------------
-    private Control control;
+   
     private JPanel panelPrincipal;
     private JPanel panelSuperior;
     private JPanel panelCentral;
@@ -438,7 +464,12 @@ public class VentanaPrincipal extends JFrame implements Observer {
     private JTextField txtCantidadApuesta;
     private JSlider sliderApostar;
     private JLabel labBoteMesa;
-    private JFrame ventanaTabla;
+    private VentanaTablaJugadores ventanaTabla;
+    private VentanaInicio ventanaInicio;
+    
+
+    private Thread hiloCliente;
+    private Cliente cliente;
     
     //---------------------------------------------------------------------------
     

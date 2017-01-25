@@ -11,6 +11,7 @@ import java.util.Observer;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 import proyectopoker.control.Control;
 
 /* En esta clase se administra los diferentes jugadores de la partida en donde se
@@ -28,12 +29,12 @@ Revisor:Jennifer Fuentes
 public class VentanaTablaJugadores extends JFrame implements Observer{
     /* Constructor de la clase donde se le configura el nombre a la pantalla
     y se invocan los metodos de configurar */
-    public VentanaTablaJugadores(Control cont) {
+    public VentanaTablaJugadores() {
         super("Informacion de jugadores");
-        control=cont;
+  
         this.configurarPantalla();
         this.agregarComponentes(this.getContentPane());
-        control.registrar(this);
+      //  control.registrar(this);
     }
     
     /* Se le configuran las caracteristicas a la pantalla y se le realiza
@@ -66,7 +67,7 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         
         tablaJugadores.setFillsViewportHeight(true);
-        configurarTabla(tablaJugadores);
+        //configurarTabla(tablaJugadores);
         //tablaJugadores = new JTable(tabla, nombreColumnas);
         
         //scrollTabla = new JScrollPane(tablaJugadores);
@@ -85,12 +86,12 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
         this.setVisible(true);
     }
     
-    public void configurarTabla(JTable tabla){
+    public void configurarTabla(TableModel mod ){
         //En este llamado se asocia el modelo de la tabla
         // a la tabla (JTable)
-        tabla.setModel(control.modeloTabla());
-        tabla.setAutoCreateRowSorter(false);
-        tabla.getModel().addTableModelListener(new TableModelListener() {
+        tablaJugadores.setModel(mod);
+        tablaJugadores.setAutoCreateRowSorter(false);
+        tablaJugadores.getModel().addTableModelListener(new TableModelListener() {
 
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -108,7 +109,7 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
     private JTable tablaJugadores;
     
     private JScrollPane scrollTabla;
-    private Control control;
+
 
     @Override
     public void update(Observable o, Object o1) {

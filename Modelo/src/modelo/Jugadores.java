@@ -24,9 +24,9 @@ public class Jugadores {
     }
     
     public void guardarJugadores(){
-        agregarJugadorMesa(new Jugador("Luis Alejandro","Macho",5000.00));
-        agregarJugadorMesa(new Jugador("Pablo","PabCL",5000.00));
-        agregarJugadorMesa(new Jugador("Jennifer","Jenny",5000.00));
+        agregarJugadorMesa(new Jugador("Luis Alejandro","Macho"));
+        agregarJugadorMesa(new Jugador("Pablo","PabCL"));
+        agregarJugadorMesa(new Jugador("Jennifer","Jenny"));
     }
     
     

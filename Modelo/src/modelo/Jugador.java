@@ -4,10 +4,10 @@ package modelo;
 
 public class Jugador {
 
-    public Jugador(String nombre, String nickname, double dinero) {
+    public Jugador(String nombre, String nickname) {
         this.nombre = nombre;
         this.nickname = nickname;
-        this.dinero = dinero;
+        this.dinero = 5000.0;
     }
 
     public String getNombre() {

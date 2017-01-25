@@ -37,6 +37,17 @@ public class Modelo extends Observable{
         return modeloTabla;
     }
     
+     public void pasar(Evento e){
+       actualizar("Pasar");
+    }
+     
+     public void noIr(Evento e){
+       actualizar("NoIr");
+    }
+     public void apostar(Evento e){
+       actualizar("Apostar");
+    }
+    
     public void actualizar(Object evento){
         setChanged();
         notifyObservers(evento);

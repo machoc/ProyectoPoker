@@ -5,15 +5,20 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import javax.swing.JOptionPane;
+import javax.swing.table.TableModel;
 import modelo.Evento;
+import modelo.Jugador;
 import protocolo.Protocolo;
 import proyectopoker.vista.VentanaPrincipal;
+import proyectopoker.vista.VentanaInicio;
 
 
 public class Cliente implements Runnable {  
     
-    public Cliente(VentanaPrincipal ventana){
+    public Cliente(VentanaPrincipal ventana,VentanaInicio inicio){
         jugador = ventana;
+        datosJugador=inicio;
         nEvento = 0;
     }
     
@@ -44,11 +49,12 @@ public class Cliente implements Runnable {
         escribirMensajeServidor(p);
     }*/
     
-    public void escribirMensajeServidor(String puntos){
+    
+    public void escribirObjetoServidor(Object o){
         Evento e = null;
         try {
-          e = new Evento(++nEvento,puntos,null);
-          System.out.println("Puntos hacia servidor" + e.getMensaje());
+          e = new Evento(++nEvento," ",o);
+          System.out.println("Enviando Objeto a servidor");
           salida.writeObject(e);
         }
         catch (Exception ex)
@@ -62,7 +68,8 @@ public class Cliente implements Runnable {
                  System.out.println("Iniciamos:");
                  e = (Evento)entrada.readObject(); 
                  leerTurnoCliente(e);
-                 //leerPuntosCliente(e);
+                 leerMensaje(e);
+                 leerTerminarTurno(e);
                  Thread.sleep (15);
             }
         }
@@ -78,20 +85,11 @@ public class Cliente implements Runnable {
                 numCliente = e.getMensaje();
                 nCliente = numCliente;
                 System.out.println(numCliente);
+               // escribirObjetoServidor(jugAux);
+               // setearModeloTabla();
+                //escribirObjetoServidor(jugador.mandarVentTabla());
+               
                 
-                if(numCliente.equals("3")){
-                   /* jugador.obtenerEtqJugador1().setText("Jugador# 3:");
-                    jugador.obtenerEtqJugador2().setText("Jugador# 1:");
-                    jugador.obtenerEtqJugador3().setText("Jugador# 2:");*/
-                    
-                }
-                
-                if(numCliente.equals("2")){
-                    /*jugador.obtenerEtqJugador1().setText("Jugador# 2:");
-                    jugador.obtenerEtqJugador2().setText("Jugador# 1:");
-                    jugador.obtenerEtqJugador3().setText("Jugador# 3:");*/
-                    
-                }        
                 leer();
         
         } catch (ClassNotFoundException ex) {
@@ -102,13 +100,52 @@ public class Cliente implements Runnable {
         }
     }
     
+    public void leerMensaje(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("Mensaje")){
+                 JOptionPane.showMessageDialog(null, (String)e.getInfo());
+              }
+               mensaje = "";
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+          }
+    
+       public void leerTerminarTurno(Evento e){
+        String terminar="";
+        try {                 
+               terminar = e.getMensaje();
+                
+                if(terminar.equals("Terminar") ){
+                    
+                   jugador.deshabilitarBotones();
+                    }
+                    terminar = "";
+                }    
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+    }
+    
     public void leerTurnoCliente(Evento e){
         String turnoCliente="";
         try {                 
                 turnoCliente = e.getMensaje();
                 
                 if(turnoCliente.equals("turno")){
-                    //jugador.obtenerBtnJugar().setEnabled(true);                    
+                     JOptionPane.showMessageDialog(null,"Es tu turno");
+//                     if (aux){
+//                        //escribirObjetoServidor(jugAux);
+//                        setearModeloTabla();
+//                        escribirObjetoServidor(jugador.mandarVentTabla());
+//                        aux =false;
+//                     }
+                    jugador.habilitarBotones();
                     turnoCliente = "";
                 }
                 
@@ -118,6 +155,46 @@ public class Cliente implements Runnable {
         }
         
     }
+    
+    
+    public void pasar(){
+        Evento e = null;
+        try {
+          e = new Evento(Integer.parseInt(nCliente),"Pasar",null);
+          System.out.println("Enviando accion a Servidor");
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+    
+    
+    
+     public void apostar(String apuesta){
+        Evento e = null;
+        try {
+          e = new Evento(Integer.parseInt(nCliente),"Apostar",apuesta);
+          System.out.println("Enviando accion a Servidor");
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+      public void noIr(String apuesta){
+        Evento e = null;
+        try {
+          e = new Evento(Integer.parseInt(nCliente),"NoIr",apuesta);
+          System.out.println("Enviando accion a Servidor");
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+    
     
    /* public void leerPuntosCliente(Evento e){
         String prefijo="";
@@ -180,12 +257,33 @@ public class Cliente implements Runnable {
      }
     }
     
+    public void recibirDatosCliente(Jugador j){
+        jugAux=j;
+         System.out.println("Jugador cargado correctamente");
+    }
+    
+      private void setearModeloTabla() {
+       Evento e =null;
+        try {                 
+              e = (Evento)entrada.readObject(); 
+              jugador.mandarVentTabla().configurarTabla((TableModel)e.getInfo());
+        } 
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+    
     //Atributos
+     public static boolean aux = true;
     ObjectInputStream entrada;
     ObjectOutputStream salida;
     int nEvento;
+    Jugador jugAux;
     String nCliente;
     Socket skt;
     VentanaPrincipal jugador;
+    VentanaInicio datosJugador;
+
+  
     
 }

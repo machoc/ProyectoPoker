@@ -20,6 +20,10 @@ public class Evento implements Serializable {
         return mensaje;
     }
     
+     public Object getInfo() {
+        return info;
+    }
+    
     public int getCodigo() {
         return codigo;
     }
