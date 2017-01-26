@@ -1,29 +1,19 @@
 
-package proyectopoker.control;
+package controlador;
 
 import java.util.Observer;
 import javax.swing.table.TableModel;
 import modelo.Jugador;
 import modelo.Modelo;
 
-/* La clase control funcionara para enlazar las ventanas con el modelo.
 
-Creadores: Luis Alejandro Castaing.
-Pablo Campos
-
-Revisor: Jennifer Fuentes
-
-
-*/
-public class Control {
+public class Controlador {
     
-    //---------------METODOS------------------------
-    
-    public Control(Modelo mod){
+ public Controlador(Modelo mod){
         this.modelo = mod;
     }
 
-    public Control() {
+    public Controlador() {
         this(new Modelo());
     }
     
@@ -52,4 +42,6 @@ public class Control {
     
     private Modelo modelo;
     //----------------------------------------------
+   
+    
 }

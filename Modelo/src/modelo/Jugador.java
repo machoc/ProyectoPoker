@@ -43,7 +43,6 @@ public class Jugador {
         r[0] = getNombre();
         r[1] = getNickname();
         r[2] = getDinero();
-        
         return r;
     }
      
@@ -55,9 +54,8 @@ public class Jugador {
             case 1:
                 setNickname(aValue.toString());
                 break;
-            case 2: 
-                setDinero((Double)aValue);
-                break;
+            case 2:
+                setDinero(((Double) aValue));
             default:
                 throw new IndexOutOfBoundsException();
         }

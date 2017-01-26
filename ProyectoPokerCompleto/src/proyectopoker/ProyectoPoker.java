@@ -2,6 +2,7 @@
 package proyectopoker;
 
 
+import controlador.Controlador;
 import proyectopoker.vista.VentanaInicio;
 import proyectopoker.vista.VentanaPrincipal;
 import proyectopoker.vista.VentanaTablaJugadores;
@@ -21,7 +22,8 @@ public class ProyectoPoker {
 
    
     public static void main(String[] args) {
-        VentanaTablaJugadores ventanaTabla = new VentanaTablaJugadores();
+        Controlador control = new Controlador();
+        VentanaTablaJugadores ventanaTabla = new VentanaTablaJugadores(control);
         VentanaPrincipal ventana = new VentanaPrincipal(ventanaTabla);
         VentanaInicio inicio = new VentanaInicio(ventana);
         inicio.mostrar();

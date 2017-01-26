@@ -1,6 +1,7 @@
 
 package proyectopoker.vista;
 
+import controlador.Controlador;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -12,7 +13,6 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import proyectopoker.control.Control;
 
 /* En esta clase se administra los diferentes jugadores de la partida en donde se
 muestra el nombre, nickname y el dinero que tiene cada jugador 
@@ -29,9 +29,9 @@ Revisor:Jennifer Fuentes
 public class VentanaTablaJugadores extends JFrame implements Observer{
     /* Constructor de la clase donde se le configura el nombre a la pantalla
     y se invocan los metodos de configurar */
-    public VentanaTablaJugadores() {
+    public VentanaTablaJugadores(Controlador nuevoGestor) {
         super("Informacion de jugadores");
-  
+        gestorPrincipal=nuevoGestor;
         this.configurarPantalla();
         this.agregarComponentes(this.getContentPane());
       //  control.registrar(this);
@@ -83,13 +83,14 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
     }
     
     public void mostrar(){
+        gestorPrincipal.registrar(this);
         this.setVisible(true);
     }
     
     public void configurarTabla(TableModel mod ){
         //En este llamado se asocia el modelo de la tabla
         // a la tabla (JTable)
-        tablaJugadores.setModel(mod);
+        tablaJugadores.setModel(gestorPrincipal.modeloTabla());
         tablaJugadores.setAutoCreateRowSorter(false);
         tablaJugadores.getModel().addTableModelListener(new TableModelListener() {
 
@@ -109,6 +110,7 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
     private JTable tablaJugadores;
     
     private JScrollPane scrollTabla;
+    private Controlador gestorPrincipal;
 
 
     @Override

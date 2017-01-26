@@ -1,6 +1,7 @@
 
 package proyectopoker.vista;
 
+import controlador.Controlador;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import modelo.Jugador;
+import proyectopoker.control.Control;
 
 
 /* Esta clase es la que iniciara el juego, el jugador necesitara ingresar su nombre
@@ -156,7 +158,7 @@ public class VentanaInicio extends JFrame  {
                  nickname="Desconocido";
            
               Jugador jugAux = new Jugador(nombre, nickname);
-     //        gestorPrincipal.agregarJugador(nuevoJugador);
+             //gestorPrincipal.agregarJugador(jugAux);
              ocultar();
              ventPrincipal.mostrar();
             ventPrincipal.mandarDatosCliente(jugAux);
@@ -195,6 +197,7 @@ public class VentanaInicio extends JFrame  {
     private JButton btnIngresarMesa;
     private JButton btnCancelar;
     private VentanaPrincipal ventPrincipal;
+    
 
   
   
