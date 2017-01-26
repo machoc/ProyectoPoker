@@ -28,6 +28,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import modelo.Jugador;
 import proyectopoker.Cliente;
 
@@ -313,6 +315,18 @@ public class VentanaPrincipal extends JFrame {
         
         
     }
+    
+    public void setMaximo(int x){
+        sliderApostar.setMaximum(x);
+    }
+    
+    public void setTexto(int x){
+        txtCantidadApuesta.setText(Integer.toString(x));
+    }
+    
+    public JSlider getJS(){
+        return sliderApostar;
+    }
     /* Se agregan y configuran los listeners de los componentes de la ventana
     que responderan a los eventos generados por el usuario*/
     public void agregarEventos(){
@@ -362,7 +376,13 @@ public class VentanaPrincipal extends JFrame {
              public void actionPerformed(ActionEvent ae) {
                  cliente.apostar(labApuestaJugador3.getText());
              }
-         }); 
+         });
+         sliderApostar.addChangeListener(new ChangeListener() {
+             @Override
+             public void stateChanged(ChangeEvent e) {
+                 txtCantidadApuesta.setText(Integer.toString(sliderApostar.getValue()));
+             }
+         });
     }
     /*hace visible esta ventana*/
     public void mostrar(){
