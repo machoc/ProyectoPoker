@@ -9,16 +9,19 @@ import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
 import modelo.Evento;
 import modelo.Jugador;
+import modelo.Modelo;
 import protocolo.Protocolo;
 import proyectopoker.vista.VentanaPrincipal;
 import proyectopoker.vista.VentanaInicio;
+import proyectopoker.vista.VentanaTablaJugadores;
 
 
 public class Cliente implements Runnable {  
     
-    public Cliente(VentanaPrincipal ventana,VentanaInicio inicio){
+    public Cliente(VentanaPrincipal ventana,VentanaInicio inicio, VentanaTablaJugadores pos){
         jugador = ventana;
         datosJugador=inicio;
+        posiciones=pos;
         nEvento = 0;
     }
     
@@ -53,7 +56,7 @@ public class Cliente implements Runnable {
     public void escribirObjetoServidor(Object o){
         Evento e = null;
         try {
-          e = new Evento(++nEvento," ",o);
+          e = new Evento(++nEvento,"objeto",o);
           System.out.println("Enviando Objeto a servidor");
           salida.writeObject(e);
         }
@@ -68,6 +71,8 @@ public class Cliente implements Runnable {
                  System.out.println("Iniciamos:");
                  e = (Evento)entrada.readObject(); 
                  leerTurnoCliente(e);
+                 setearModeloTabla(e);
+                 registrarVentanaTabla(e);
                  leerMensaje(e);
                  leerTerminarTurno(e);
                  Thread.sleep (15);
@@ -85,9 +90,8 @@ public class Cliente implements Runnable {
                 numCliente = e.getMensaje();
                 nCliente = numCliente;
                 System.out.println(numCliente);
-               // escribirObjetoServidor(jugAux);
-               // setearModeloTabla();
-                //escribirObjetoServidor(jugador.mandarVentTabla());
+                escribirObjetoServidor(jugAux);
+              
                
                 
                 leer();
@@ -106,13 +110,12 @@ public class Cliente implements Runnable {
               mensaje=e.getMensaje();
               if(mensaje.equals("Mensaje")){
                  JOptionPane.showMessageDialog(null, (String)e.getInfo());
+                 mensaje = "";
               }
-               mensaje = "";
                 }
             catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
-        
           }
     
        public void leerTerminarTurno(Evento e){
@@ -121,10 +124,9 @@ public class Cliente implements Runnable {
                terminar = e.getMensaje();
                 
                 if(terminar.equals("Terminar") ){
-                    
-                   jugador.deshabilitarBotones();
+                   jugador.deshabilitarBotones(); 
+                   terminar = "";
                     }
-                    terminar = "";
                 }    
             catch (Exception ex) {
             System.err.println(ex.getMessage());
@@ -139,12 +141,7 @@ public class Cliente implements Runnable {
                 
                 if(turnoCliente.equals("turno")){
                      JOptionPane.showMessageDialog(null,"Es tu turno");
-//                     if (aux){
-//                        //escribirObjetoServidor(jugAux);
-//                        setearModeloTabla();
-//                        escribirObjetoServidor(jugador.mandarVentTabla());
-//                        aux =false;
-//                     }
+         
                     jugador.habilitarBotones();
                     turnoCliente = "";
                 }
@@ -194,57 +191,7 @@ public class Cliente implements Runnable {
         { ex.printStackTrace();
         }
    }
-    
-    
-   /* public void leerPuntosCliente(Evento e){
-        String prefijo="";
-        String puntosCliente="";
-        String numCliente="";
-        try {       
-             
-                
-                prefijo=e.getMensaje().substring(0,1);
-                numCliente = e.getMensaje().substring(1,2);
-                puntosCliente = e.getMensaje().substring(2,e.getMensaje().length());                
-                
-                if(prefijo.equals("p")){
-                    System.out.println("Numero de cliente consola" +nCliente);
-                    System.out.println("Numero de cliente" +numCliente);
-                    if(!(numCliente.equals(nCliente)) && (nCliente.equals("1"))){    
-                        if(numCliente.equals("2")){
-                            jugador.obtenerValorEtqJugador2().setText(puntosCliente);
-                        }
-                        if(numCliente.equals("3")){
-                            jugador.obtenerValorEtqJugador3().setText(puntosCliente);
-                        }
-                    }
-                    
-                    if(!(numCliente.equals(nCliente)) && (nCliente.equals("2"))){    
-                        if(numCliente.equals("1")){
-                            jugador.obtenerValorEtqJugador2().setText(puntosCliente);
-                        }
-                        if(numCliente.equals("3")){
-                            jugador.obtenerValorEtqJugador3().setText(puntosCliente);
-                        }
-                    }
-                    
-                    if(!(numCliente.equals(nCliente)) && (nCliente.equals("3"))){    
-                        if(numCliente.equals("1")){
-                            jugador.obtenerValorEtqJugador2().setText(puntosCliente);
-                        }
-                        if(numCliente.equals("2")){
-                            jugador.obtenerValorEtqJugador3().setText(puntosCliente);
-                        }
-                    }
-                                     
-                }                        
-        
-        }
-            catch (Exception ex) {
-            System.err.println(ex.getMessage());
-        }
-        
-    }*/
+
     
     public void cerrarCliente (){
      try {
@@ -262,11 +209,31 @@ public class Cliente implements Runnable {
          System.out.println("Jugador cargado correctamente");
     }
     
-      private void setearModeloTabla() {
-       Evento e =null;
+    private void registrarVentanaTabla(Evento e) {
+      String mod ="";
         try {                 
-              e = (Evento)entrada.readObject(); 
+              mod = e.getMensaje();
+              if (mod.equals("Ventana")&&e.getInfo()!= null){
+             Modelo m = (Modelo)e.getInfo();
+             m.addObserver(posiciones);
+             System.out.println("Registrando Ventana"); 
+             mod ="";
+              }
+        } 
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }
+    
+      private void setearModeloTabla(Evento e) {
+      String mod ="";
+        try {                 
+              mod = e.getMensaje();
+              if (mod.equals("Modelo")){
               jugador.mandarVentTabla().configurarTabla((TableModel)e.getInfo());
+              System.out.println("Configurando modelo tabla"); 
+              mod ="";
+              }
         } 
             catch (Exception ex) {
             System.err.println(ex.getMessage());
@@ -281,8 +248,9 @@ public class Cliente implements Runnable {
     Jugador jugAux;
     String nCliente;
     Socket skt;
-    VentanaPrincipal jugador;
-    VentanaInicio datosJugador;
+    private VentanaPrincipal jugador;
+    private VentanaInicio datosJugador;
+    private VentanaTablaJugadores posiciones;
 
   
     

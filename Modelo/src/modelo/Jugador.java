@@ -1,8 +1,10 @@
 
 package modelo;
 
+import java.io.Serializable;
 
-public class Jugador {
+
+public class Jugador implements Serializable{
 
     public Jugador(String nombre, String nickname) {
         this.nombre = nombre;

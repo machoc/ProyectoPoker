@@ -1,12 +1,13 @@
 
 package proyectopoker.vista;
 
-import controlador.Controlador;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.*;
@@ -26,12 +27,11 @@ Revisor:Jennifer Fuentes
 */
 
 
-public class VentanaTablaJugadores extends JFrame implements Observer{
+public class VentanaTablaJugadores extends JFrame implements Observer,Serializable{
     /* Constructor de la clase donde se le configura el nombre a la pantalla
     y se invocan los metodos de configurar */
-    public VentanaTablaJugadores(Controlador nuevoGestor) {
+    public VentanaTablaJugadores() {
         super("Informacion de jugadores");
-        gestorPrincipal=nuevoGestor;
         this.configurarPantalla();
         this.agregarComponentes(this.getContentPane());
       //  control.registrar(this);
@@ -66,12 +66,7 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
                         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         
-        tablaJugadores.setFillsViewportHeight(true);
-        //configurarTabla(tablaJugadores);
-        //tablaJugadores = new JTable(tabla, nombreColumnas);
-        
-        //scrollTabla = new JScrollPane(tablaJugadores);
-        
+        tablaJugadores.setFillsViewportHeight(true);        
         panelTabla.add(scrollTabla,FlowLayout.LEFT);
         panelPrincipal.add(panelTabla,BorderLayout.CENTER);
         
@@ -83,14 +78,13 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
     }
     
     public void mostrar(){
-        gestorPrincipal.registrar(this);
         this.setVisible(true);
     }
     
     public void configurarTabla(TableModel mod ){
         //En este llamado se asocia el modelo de la tabla
         // a la tabla (JTable)
-        tablaJugadores.setModel(gestorPrincipal.modeloTabla());
+        tablaJugadores.setModel(mod);
         tablaJugadores.setAutoCreateRowSorter(false);
         tablaJugadores.getModel().addTableModelListener(new TableModelListener() {
 
@@ -110,7 +104,7 @@ public class VentanaTablaJugadores extends JFrame implements Observer{
     private JTable tablaJugadores;
     
     private JScrollPane scrollTabla;
-    private Controlador gestorPrincipal;
+
 
 
     @Override

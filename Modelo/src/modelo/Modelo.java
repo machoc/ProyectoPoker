@@ -1,5 +1,6 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.Observable;
 import javax.swing.table.TableModel;
 import modelo.Jugador;
@@ -16,7 +17,7 @@ Revisor: Jennifer Fuentes
 
 */
 
-public class Modelo extends Observable{
+public class Modelo extends Observable implements Serializable{
     //---------------METODOS------------------------
     public Modelo(){
         jugadores = new Jugadores();
@@ -62,7 +63,7 @@ public class Modelo extends Observable{
     private Jugadores jugadores;
     private JugadoresTablaModelo modeloTabla;
     
-    public static final int MAX_JUGADORES = 3;
+    public static final int MAX_JUGADORES = 2;
     
     //----------------------------------------------
 }

@@ -1,7 +1,7 @@
 
 package proyectopoker.vista;
 
-import controlador.Controlador;
+
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -17,7 +17,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import modelo.Jugador;
-import proyectopoker.control.Control;
 
 
 /* Esta clase es la que iniciara el juego, el jugador necesitara ingresar su nombre
@@ -77,24 +76,16 @@ public class VentanaInicio extends JFrame  {
         txtNickname = new JTextField(10);
         panelPrincipal.add(txtNickname,gbc);
         
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        lblDinero= new JLabel("Dinero");
-        panelPrincipal.add(lblDinero,gbc);
-        
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        txtDinero = new JTextField(10);
-        panelPrincipal.add(txtDinero,gbc);
+       
         
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 2;
         gbc.fill = 2;
         btnIngresarMesa = new JButton("Ingresar Mesa");
         panelPrincipal.add(btnIngresarMesa,gbc);
         
-        gbc.gridx = 2;
-        gbc.gridy = 3;
+        gbc.gridx = 1;
+        gbc.gridy = 2;
         gbc.fill = 2;
         btnCancelar = new JButton("Cancelar");
         panelPrincipal.add(btnCancelar,gbc);
@@ -148,24 +139,20 @@ public class VentanaInicio extends JFrame  {
              String nombre;
              String nickname ;
              Double dinero ;
-             if(txtNombre.getText() !="")
+             if(!txtNombre.getText().isEmpty())
                  nombre = txtNombre.getText();
              else
                  nombre="Anonimo";
-             if(txtNickname.getText()!="")
+             if(!txtNickname.getText().isEmpty())
              nickname = txtNickname.getText();
              else 
                  nickname="Desconocido";
            
-              Jugador jugAux = new Jugador(nombre, nickname);
-             //gestorPrincipal.agregarJugador(jugAux);
-             ocultar();
+             Jugador jugAux = new Jugador(nombre, nickname); 
              ventPrincipal.mostrar();
-            ventPrincipal.mandarDatosCliente(jugAux);
-             
-             
-             
-             
+             ventPrincipal.mandarDatosCliente(jugAux);
+             ocultar();
+            
              
            
            }
@@ -192,8 +179,6 @@ public class VentanaInicio extends JFrame  {
     
     private JTextField txtNombre;
     private JTextField txtNickname;
-    private JTextField txtDinero;
-    
     private JButton btnIngresarMesa;
     private JButton btnCancelar;
     private VentanaPrincipal ventPrincipal;

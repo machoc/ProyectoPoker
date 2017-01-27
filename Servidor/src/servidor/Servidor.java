@@ -54,10 +54,13 @@ public class Servidor {
                     System.out.println("Agregando: " + nuevoCliente + "Cliente" + numClientes);
                     registrar(nuevoCliente);
                     Thread hiloCliente= new  Thread  (nuevoCliente);
-                    hiloCliente.start();
-                   // agregarJugador(nuevoCliente.leerDatosJugador());
-                   // nuevoCliente.setearModeloTabla(datos.modeloTabla());
-                    //registrar((Observer)nuevoCliente.leerVentanaTabla());
+                    hiloCliente.start(); 
+                    agregarJugador(nuevoCliente.leerDatosJugador());  
+                    nuevoCliente.setearModeloTabla(datos.modeloTabla());
+                    nuevoCliente.registrarVentanaTabla(datos);
+                 
+                  
+                  
                         
                 } catch (SocketTimeoutException e) {
                     // No se ha conectado ningún cliente.
@@ -67,12 +70,15 @@ public class Servidor {
             }
             JOptionPane.showMessageDialog(null,"El máximo de jugadores es 3");
             while (true)  { 
+                System.out.println("Cantidad de Observadores: "+datos.countObservers());
                 controlarTurnos(); 
             }
         } catch (Exception e) {            
             System.err.println(e.getMessage());
         }
     }
+     
+    
      
      public void controlarTurnos(){
         Evento e = null;
@@ -81,18 +87,15 @@ public class Servidor {
         for(GestorClientes cliente: clientes){
             e = new Evento(cliente.getnEvento(),"turno",null);
             cliente.escribirEntrada(e);
-//         if(cliente.aux){
-//            // agregarJugador(cliente.leerDatosJugador());
-//             cliente.setearModeloTabla(datos.modeloTabla());
-//              registrar((Observer)cliente.leerVentanaTabla());
-//              cliente.aux = false;
-//         }
+            
+            
+            
             apuesta= cliente.leerAccionCliente();
-            if(apuesta.getMensaje()=="Pasar")
+            if(apuesta.getMensaje().equals("Pasar"))
                 datos.pasar(apuesta);
-            else if(apuesta.getMensaje()=="NoIr")
+            else if(apuesta.getMensaje().equals("NoIr"))
                 datos.noIr(apuesta);
-            else if(apuesta.getMensaje()=="Apostar")
+            else if(apuesta.getMensaje().equals("Apostar"))
                 datos.apostar(apuesta);
             
            cliente.escribirTerminarTurno();

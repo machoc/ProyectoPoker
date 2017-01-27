@@ -38,8 +38,13 @@ public class GestorClientes implements Observer,Runnable {
         }
     }
     
+    public void registrarVentanaTabla(Object mod){
+        Evento e = new Evento(++nEvento,"Ventana",mod);
+        escribirEntrada(e);
+    }
+    
     public void setearModeloTabla(Object modTabla){
-        Evento e = new Evento(++nEvento,"",modTabla);
+        Evento e = new Evento(++nEvento,"Modelo",modTabla);
         escribirEntrada(e);
     }
     
@@ -47,12 +52,11 @@ public class GestorClientes implements Observer,Runnable {
         
     }
 
-     public Observer leerVentanaTabla(){
+     public Object leerVentanaTabla(){
         Evento e = null;
-        Observer ventTabla =null;
         try {
               e =  (Evento)entrada.readObject();
-              ventTabla= (Observer)e.getInfo();        
+      
               System.out.println("Leyendo Observer Ventana de Cliente"+nCliente);
                            
         } catch (ClassNotFoundException ex) {
@@ -61,7 +65,7 @@ public class GestorClientes implements Observer,Runnable {
         catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
-        return ventTabla;
+        return e.getInfo();
     }
      
      public Evento leerAccionCliente(){
@@ -166,9 +170,10 @@ public class GestorClientes implements Observer,Runnable {
         return nCliente;
     }
     
+
     
     //Atributos
-    public static boolean aux = true;
+ 
     private Servidor gestorPrincipal;
     private InetAddress direccionCliente;
     private ObjectOutputStream salida;
