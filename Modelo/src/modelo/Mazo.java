@@ -1,10 +1,11 @@
 
 package modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class Mazo {
+public class Mazo implements Serializable {
 
     public Mazo() {
         mazo = new ArrayList<>();

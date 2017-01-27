@@ -79,14 +79,17 @@ public class VentanaPrincipal extends JFrame {
     }
     
      public void conectarse(){
-          cliente= new Cliente (this,ventanaInicio);
+          cliente= new Cliente (this,ventanaInicio,ventanaTabla);
            hiloCliente= new Thread( cliente);
            hiloCliente.start();
     }
      
+     
+
      public void mandarDatosCliente(Jugador j){
          cliente.recibirDatosCliente(j);
      }
+     
      
      public VentanaTablaJugadores mandarVentTabla(){
          return ventanaTabla;
@@ -102,13 +105,7 @@ public class VentanaPrincipal extends JFrame {
             
         panelPrincipal.setLayout(new BorderLayout());
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(0,50,0,50));
-        c.add(panelPrincipal,BorderLayout.CENTER);
-        
-        panelSuperior=new JPanel();
-        panelSuperior.setOpaque(false);
-        
-        panelPrincipal.add(panelSuperior,BorderLayout.NORTH);
-        
+        c.add(panelPrincipal,BorderLayout.CENTER);        
         
         panelInferior = new JPanel();
         panelInferior.setLayout(new BorderLayout());
@@ -142,27 +139,18 @@ public class VentanaPrincipal extends JFrame {
         menuArchivo.add(menuArchivoSalir);
         menu.add(menuArchivo);
         menuPartida=new JMenu("PARTIDA");
-        menuPartidaNueva=new JMenuItem("NUEVA");
-        menuPartidaAbandonar=new JMenuItem("ABANDONAR");
         menuPartidaPosiciones=new JMenuItem("VER POSICIONES");
-        menuPartida.add(menuPartidaNueva);
         menuPartida.add(menuPartidaPosiciones);
-        menuPartida.add(menuPartidaAbandonar);
         menu.add(menuPartida);
-        menuConfiguracion=new JMenu("CONFIGURACION");
-        menu.add(menuConfiguracion);
         menuAyuda=new JMenu("AYUDA");
         menuAcerca=new JMenuItem("ACERCA");
-        menuHelp=new JMenuItem("AYUDA");
+        menuHelp=new JMenuItem("JUGADAS");
         menuAyuda.add(menuHelp);
         menuAyuda.add(menuAcerca);
         menu.add(menuAyuda);
         
         this.setJMenuBar(menu);
         
-        panelJugadores = new JPanel();
-       // panelJugadores.setOpaque(false);
-        //panelSuperior.add(panelJugadores);
 
   
        JPanel panelCentralSuperior = new JPanel(new GridLayout(1,3));
@@ -170,6 +158,52 @@ public class VentanaPrincipal extends JFrame {
 
        
        
+       
+       panelJugador1=new JPanel(new GridLayout(2,1));
+       panelJugador1.setOpaque(false);
+       panelJugador1Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
+       panelJugador1Info .setLayout(new BorderLayout());
+       panelJugador1Info.setOpaque(false);
+       panelJugador1Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
+       labNombreJugador1=new JLabel("NOMBRE",JLabel.CENTER);
+       labApuestaJugador1=new JLabel("APUESTA",JLabel.CENTER);
+       panelJugador1Info.add(labApuestaJugador1,BorderLayout.SOUTH);
+       panelJugador1Info.add(labNombreJugador1,BorderLayout.CENTER);
+       panelJugador1Cartas = new JPanel();
+       panelJugador1Cartas.setOpaque(false);
+       panelJugador1.add(panelJugador1Info);
+       panelJugador1.add(panelJugador1Cartas);
+       cartasJug1=new ArrayList<>();
+       for(int i = 0; i < 2; i++){
+           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
+           ImageIcon icon = new ImageIcon(url);
+           cartasJug1.add(new JLabel());
+           cartasJug1.get(i).setIcon(icon);
+           panelJugador1Cartas.add( cartasJug1.get(i));
+       }
+       
+       panelJugador2=new JPanel(new GridLayout(2,1));
+       panelJugador2.setOpaque(false);
+       panelJugador2Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
+       panelJugador2Info .setLayout(new BorderLayout());
+       panelJugador2Info.setOpaque(false);
+       panelJugador2Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
+       labNombreJugador2=new JLabel("NOMBRE",JLabel.CENTER);
+       labApuestaJugador2=new JLabel("APUESTA",JLabel.CENTER);
+       panelJugador2Info.add(labApuestaJugador2,BorderLayout.SOUTH);
+       panelJugador2Info.add(labNombreJugador2,BorderLayout.CENTER);
+       panelJugador2Cartas = new JPanel();
+       panelJugador2Cartas.setOpaque(false);
+       panelJugador2.add(panelJugador2Info);
+       panelJugador2.add(panelJugador2Cartas);
+       cartasJug2=new ArrayList<>();
+       for(int i = 0; i < 2; i++){
+           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
+           ImageIcon icon = new ImageIcon(url);
+           cartasJug2.add(new JLabel());
+           cartasJug2.get(i).setIcon(icon);
+           panelJugador2Cartas.add( cartasJug2.get(i));
+       }
        
        panelJugador3=new JPanel(new GridLayout(2,1));
        panelJugador3.setOpaque(false);
@@ -194,61 +228,15 @@ public class VentanaPrincipal extends JFrame {
            panelJugador3Cartas.add( cartasJug3.get(i));
        }
        
-       panelJugador4=new JPanel(new GridLayout(2,1));
-       panelJugador4.setOpaque(false);
-       panelJugador4Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
-       panelJugador4Info .setLayout(new BorderLayout());
-       panelJugador4Info.setOpaque(false);
-       panelJugador4Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
-       labNombreJugador4=new JLabel("NOMBRE",JLabel.CENTER);
-       labApuestaJugador4=new JLabel("APUESTA",JLabel.CENTER);
-       panelJugador4Info.add(labApuestaJugador4,BorderLayout.SOUTH);
-       panelJugador4Info.add(labNombreJugador4,BorderLayout.CENTER);
-       panelJugador4Cartas = new JPanel();
-       panelJugador4Cartas.setOpaque(false);
-       panelJugador4.add(panelJugador4Info);
-       panelJugador4.add(panelJugador4Cartas);
-       cartasJug4=new ArrayList<>();
-       for(int i = 0; i < 2; i++){
-           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
-           ImageIcon icon = new ImageIcon(url);
-           cartasJug4.add(new JLabel());
-           cartasJug4.get(i).setIcon(icon);
-           panelJugador4Cartas.add( cartasJug4.get(i));
-       }
-       
-       panelJugador5=new JPanel(new GridLayout(2,1));
-       panelJugador5.setOpaque(false);
-       panelJugador5Info = new JPanelConFondo("../vista/imagenes/jugadorFondo.png");
-       panelJugador5Info .setLayout(new BorderLayout());
-       panelJugador5Info.setOpaque(false);
-       panelJugador5Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
-       labNombreJugador5=new JLabel("NOMBRE",JLabel.CENTER);
-       labApuestaJugador5=new JLabel("APUESTA",JLabel.CENTER);
-       panelJugador5Info.add(labApuestaJugador5,BorderLayout.SOUTH);
-       panelJugador5Info.add(labNombreJugador5,BorderLayout.CENTER);
-       panelJugador5Cartas = new JPanel();
-       panelJugador5Cartas.setOpaque(false);
-       panelJugador5.add(panelJugador5Info);
-       panelJugador5.add(panelJugador5Cartas);
-       cartasJug5=new ArrayList<>();
-       for(int i = 0; i < 2; i++){
-           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
-           ImageIcon icon = new ImageIcon(url);
-           cartasJug5.add(new JLabel());
-           cartasJug5.get(i).setIcon(icon);
-           panelJugador5Cartas.add( cartasJug5.get(i));
-       }
-       
        
         JPanel panelIzquierdoInferior = new JPanel();
         panelIzquierdoInferior.setOpaque(false);
         
         panelIzquierdo.add(panelIzquierdoInferior);
         
+       panelCentralSuperior.add(panelJugador1);
+       panelCentralSuperior.add(panelJugador2);
        panelCentralSuperior.add(panelJugador3);
-       panelCentralSuperior.add(panelJugador4);
-       panelCentralSuperior.add(panelJugador5);
        
        JPanel panelDerechoInferior = new JPanel();
        panelDerechoInferior.setOpaque(false);
@@ -351,6 +339,17 @@ public class VentanaPrincipal extends JFrame {
             }
         }); 
         
+         menuAcerca.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                JOptionPane.showMessageDialog(null, "Aplicacion creada por:"
+                        + "\n     Juan Pablo Campos Leon"
+                        + "\n     Luis Castaing Vargas"
+                        + "\n\nProgramacion III Verano 2016"
+                        + "\nProfesora:"
+                        + "\n     Jennifer Fuentes Bustos", "Acerca", JOptionPane.INFORMATION_MESSAGE);
+            }}); 
+        
          menuPartidaPosiciones.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -415,12 +414,10 @@ public class VentanaPrincipal extends JFrame {
     //--------ATRIBUTOS------------------------------------------------------------
    
     private JPanel panelPrincipal;
-    private JPanel panelSuperior;
     private JPanel panelCentral;
     private JPanel panelInferior;
     private JPanel panelDerecho;
     private JPanel panelIzquierdo;
-    private JPanel panelJugadores;
     private JPanel panelBotones;
     private ArrayList<JLabel> cartasCentrales;
     private JPanel panelJugador1;
@@ -438,42 +435,16 @@ public class VentanaPrincipal extends JFrame {
     private JLabel labNombreJugador3;
     private JLabel labApuestaJugador3;
     private JPanel panelJugador3Cartas;
-    private JPanel panelJugador4;
-    private JPanel panelJugador4Info;
-    private JLabel labNombreJugador4;
-    private JLabel labApuestaJugador4;
-    private JPanel panelJugador4Cartas;
-    private JPanel panelJugador5;
-    private JPanel panelJugador5Info;
-    private JLabel labNombreJugador5;
-    private JLabel labApuestaJugador5;
-    private JPanel panelJugador5Cartas;
-    private JPanel panelJugador6;
-    private JPanel panelJugador6Info;
-    private JLabel labNombreJugador6;
-    private JLabel labApuestaJugador6;
-    private JPanel panelJugador6Cartas;
-    private JPanel panelJugador7;
-    private JPanel panelJugador7Info;
-    private JLabel labNombreJugador7;
-    private JLabel labApuestaJugador7;
-    private JPanel panelJugador7Cartas;
     private ArrayList<JLabel> cartasJug1;
     private ArrayList<JLabel> cartasJug2;
     private ArrayList<JLabel> cartasJug3;
-    private ArrayList<JLabel> cartasJug4;
-    private ArrayList<JLabel> cartasJug5;
-    private ArrayList<JLabel> cartasJug6;
-    private ArrayList<JLabel> cartasJug7;
+    
     
     private JMenuBar menu;
     private JMenuItem menuArchivo;
     private JMenuItem menuArchivoSalir;
     private JMenuItem menuPartida;
-    private JMenuItem menuPartidaNueva;
-    private JMenuItem menuPartidaAbandonar;
     private JMenuItem menuPartidaPosiciones;
-    private JMenuItem menuConfiguracion;
     private JMenuItem menuAyuda;
     private JMenuItem menuAcerca;
     private JMenuItem menuHelp;

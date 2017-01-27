@@ -1,11 +1,12 @@
 
 package modelo;
 
+import java.io.Serializable;
 import modelo.Jugador;
 import javax.swing.table.AbstractTableModel;
 
 
-public class JugadoresTablaModelo extends AbstractTableModel {
+public class JugadoresTablaModelo extends AbstractTableModel implements Serializable{
  public JugadoresTablaModelo (Jugadores jug){
         this.jugadores = jug;
     }

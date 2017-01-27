@@ -1,11 +1,12 @@
 
 package modelo;
 
+import java.io.Serializable;
 import modelo.Jugador;
 import java.util.ArrayList;
 
 
-public class Jugadores {
+public class Jugadores implements Serializable {
 
     public Jugadores() {
         jugadores = new ArrayList<>();

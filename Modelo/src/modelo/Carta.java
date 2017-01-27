@@ -1,8 +1,10 @@
 
 package modelo;
 
+import java.io.Serializable;
 
-public class Carta {
+
+public class Carta implements Serializable{
 
     public Carta(String palo, String valor) {
         this.palo = palo;
