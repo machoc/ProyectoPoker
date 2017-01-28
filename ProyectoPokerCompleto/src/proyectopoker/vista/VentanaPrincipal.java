@@ -30,6 +30,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import modelo.Carta;
 import modelo.Jugador;
 import proyectopoker.Cliente;
 
@@ -264,10 +265,8 @@ public class VentanaPrincipal extends JFrame {
        panelCartasCentral.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
        cartasCentrales = new ArrayList<>();
        for(int i = 0; i < 5; i++){
-           URL url = getClass().getResource("../vista/imagenes/Cartas/10Corazon.png");  
-           ImageIcon icon = new ImageIcon(url);
            cartasCentrales.add(new JLabel());
-           cartasCentrales.get(i).setIcon(icon);
+           cartasCentrales.get(i).setVisible(false);
            panelCartasCentral.add( cartasCentrales.get(i));
        }
        panelCartasCentrales.add(panelCentralSuperior);
@@ -303,6 +302,18 @@ public class VentanaPrincipal extends JFrame {
         
         
         
+    }
+    
+    public void cargarFlop(ArrayList<Carta> cartas){
+        for(int i =0;i<3;i++){
+            Carta c=cartas.get(i);
+            cartasCentrales.get(i).setIcon(buscarImagenes(c.getValor(),c.getPalo()));
+            cartasCentrales.get(i).setVisible(true);
+        }
+    }
+    
+    public void deshabilitarPasar(){
+        btnPasar.setEnabled(false);
     }
     
     public void setMinimo(int x){

@@ -13,7 +13,7 @@ public class Jugador implements Serializable{
         this.dinero = 5000;
         mano=new ArrayList<>();
         cantidadApuesta=0;
-        estado=null;
+        estado="Jugando";
     }
 
     public void  limpiarMano(){
@@ -46,15 +46,21 @@ public class Jugador implements Serializable{
     public void setDinero(int dinero) {
         this.dinero = dinero;
     }
+     public String getEstado() {
+       return  estado;
+    }
     
+     public void setEstado(String est) {
+        estado=est;
+    }
     public int getCantidadApuesta() {
         return cantidadApuesta;
     }
 
     public void setCantidadApuesta(int cant) { 
-        
+        dinero-= cant - cantidadApuesta;
         this.cantidadApuesta = cant ;
-        dinero-= cant;
+        
     }
     
     

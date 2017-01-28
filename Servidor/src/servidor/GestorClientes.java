@@ -163,6 +163,19 @@ public class GestorClientes implements Observer,Runnable {
         { ex.printStackTrace();
         }
    }
+     
+     public void escribirFlop(Object flop){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"Flop",flop);
+          System.out.println("Enviando Flop" );
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
     
     public void escribirApuestas(ArrayList<String> apuestas){
         Evento e = null;
@@ -176,6 +189,29 @@ public class GestorClientes implements Observer,Runnable {
         }
    }
     
+    public void escribirDeshabilitarPasar(){
+         Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"DeshabilitarPasar",null);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+    }
+    
+    public void escribirEstado(String estado){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,estado,null);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
      public void escribirApuestaMinima(int apuesta){
         Evento e = null;
         try {

@@ -1,6 +1,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Observable;
 import javax.swing.table.TableModel;
 import modelo.Jugador;
@@ -23,6 +24,8 @@ public class Modelo extends Observable implements Serializable{
         jugadores = new Jugadores();
         modeloTabla = new JugadoresTablaModelo(jugadores);
         bote=0;
+        mazo=new Mazo();
+        cartasCentrales=new ArrayList<>();
     }
     
     public void agregarJugadorMesa(Jugador nuevoJugador){
@@ -50,6 +53,10 @@ public class Modelo extends Observable implements Serializable{
        actualizar("Apostar");
     }
      
+     public void setEstadoJugador(String estado, int n){
+         jugadores.recuperarDatos(n).setEstado(estado);
+     }
+     
      public void setApuestaMinima(int m){
          apuestaMinima=m;
      }
@@ -69,11 +76,17 @@ public class Modelo extends Observable implements Serializable{
       public void setApuestaJugador(int nCliente, int cant){
          jugadores.recuperarDatos(nCliente-1).setCantidadApuesta(cant);
      }
+      
+      public Mazo getMazo(){
+          return mazo;
+      }
      
      public int getBote(){
          return bote;
      }
-     
+     public ArrayList<Carta> getCartasCentrales(){
+         return cartasCentrales;
+     }
      public int getApuestaMinima(){
          return apuestaMinima;
      }
@@ -82,6 +95,7 @@ public class Modelo extends Observable implements Serializable{
         setChanged();
         notifyObservers(evento);
     }
+    
   
     
     //----------------------------------------------
@@ -90,9 +104,11 @@ public class Modelo extends Observable implements Serializable{
     
     //----------------ATRIBUTOS----------------------
     private Jugadores jugadores;
+    private Mazo mazo;
     private JugadoresTablaModelo modeloTabla;
     private int apuestaMinima = 50;
     private int bote;
+    private ArrayList<Carta> cartasCentrales;
     
     public static final int MAX_JUGADORES = 3;
     

@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
+import modelo.Carta;
 import modelo.Evento;
 import modelo.Jugador;
 import modelo.Modelo;
@@ -74,7 +75,9 @@ public class Cliente implements Runnable {
                  leerTurnoCliente(e);
                  setearModeloTabla(e);
                  registrarVentanaTabla(e);
+                 leerFlop(e);
                  leerMensaje(e);
+                 leerDeshabilitarPasar(e);
                  leerApuestas(e);
                  leerNombresJugadores(e);
                  leerTerminarTurno(e);
@@ -120,6 +123,38 @@ public class Cliente implements Runnable {
             System.err.println(ex.getMessage());
         }
           }
+    
+     public void leerFlop(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("Flop")){
+                 System.out.println("Cargando Flop");
+                jugador.cargarFlop((ArrayList<Carta>)e.getInfo());
+                 mensaje = "";
+              }
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+     public void leerDeshabilitarPasar(Evento e){
+        String terminar="";
+        try {                 
+               terminar = e.getMensaje();
+                
+                if(terminar.equals("DeshabilitarPasar") ){
+                
+                    jugador.deshabilitarPasar();
+
+                   terminar = "";
+                    }
+                }    
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+    }
     
      public void leerTerminarTurno(Evento e){
         String terminar="";
@@ -261,11 +296,17 @@ public class Cliente implements Runnable {
                 turnoCliente = e.getMensaje();
                 
                 if(turnoCliente.equals("turno")){
+                    String estado=(String)e.getInfo();
+                    if(estado.equals("Jugando")){
                      JOptionPane.showMessageDialog(null,"Es tu turno");
                      jugador.setMinimo(leerMinimo());
                      jugador.setMaximo(leerMaximo());
                      jugador.habilitarBotones();
                     turnoCliente = "";
+                }
+                    else{
+                        
+                    }
                 }
                 
         } 
@@ -274,6 +315,21 @@ public class Cliente implements Runnable {
         }
         
     }
+    
+     public String leerEstado(){
+        Evento e = null;
+        String estado="";
+        try {
+          e = (Evento)entrada.readObject();
+          estado=e.getMensaje();
+          return estado;
+          
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+        return estado;
+   }
     
     
     public void pasar(){

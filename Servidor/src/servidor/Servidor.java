@@ -7,6 +7,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Observer;
 import javax.swing.JOptionPane;
+import modelo.Carta;
 import modelo.Evento;
 import modelo.Jugador;
 import modelo.Modelo;
@@ -101,35 +102,75 @@ public class Servidor {
           
         return puntos;
      }
+     
+     public boolean comprobarPasar(){
+         for(int i=0;i<3;i++){
+             if(!datos.getJugador(clientes.get(i).getnCliente()-1).getEstado().equals("Pasar"))
+                 return false;
+         }
+         return true;
+     }
+     
     
      
      public void controlarTurnos(){
         Evento e = null;
         Evento apuesta= null;
-        boolean aux=true;
+       if(comprobarPasar()){
+           ArrayList<Carta> c=cargarFlop();
+           for(GestorClientes cliente: clientes){
+            datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
+            cliente.escribirFlop(c);
+           }
+       }
+        
         for(GestorClientes cliente: clientes){
-            e = new Evento(cliente.getnEvento(),"turno",null);
+            String estado=datos.getJugador(cliente.getnCliente()-1).getEstado();
+            
+            if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Pasar")&& datos.getApuestaMinima()>datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta())
+                datos.getJugador(cliente.getnCliente()-1).setEstado("Jugando");
+            
+            e = new Evento(cliente.getnEvento(),"turno",estado);
             cliente.escribirEntrada(e);
+            if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("NoIr")){
+               
+            }
+            
+            else if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Pasar")){
+     
+            }
+            
+            else{
+             
+                   
             cliente.escribirApuestaMinima(datos.getApuestaMinima());
             cliente.escribirApuestaMaxima(datos.getApuestaMaxima(cliente.getnCliente()));
             
-            
+              if(datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta()!=datos.getApuestaMinima()){
+                   cliente.escribirDeshabilitarPasar();
+               }
             
             apuesta= cliente.leerAccionCliente();
             if(apuesta.getMensaje().equals("Pasar")){
                 datos.pasar(apuesta);
+                datos.setEstadoJugador("Pasar",cliente.getnCliente()-1);
             }
             else if(apuesta.getMensaje().equals("NoIr")){
                 datos.noIr(apuesta);
+                datos.setEstadoJugador("NoIr",cliente.getnCliente()-1);
             }
             else if(apuesta.getMensaje().equals("Apostar")){
                 int cant=(Integer)apuesta.getInfo();
-              
+                
+                datos.setBote(cant-datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta());
                 datos.setApuestaJugador(cliente.getnCliente(),cant);
-                datos.setBote(cant);
-                datos.setApuestaMinima(datos.getApuestaMinima()+cant);  
+                datos.setApuestaMinima(cant);  
                 datos.apostar(apuesta);
+                datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);
+                
             } 
+            }
+            
             ArrayList<String> puntos=escribirApuestas();
             for(GestorClientes client: clientes){
                
@@ -138,6 +179,16 @@ public class Servidor {
             cliente.escribirTerminarTurno();
     }
         
+     }
+     
+     public ArrayList<Carta> cargarFlop(){
+         ArrayList<Carta> cartas = new ArrayList<>();
+         for(int i=0;i<3;i++){
+             Carta c=datos.getMazo().devolverCarta();
+             cartas.add(c);
+             datos.getCartasCentrales().add(c);
+         }
+         return cartas;
      }
      
      public void agregarJugador(Object jug){
