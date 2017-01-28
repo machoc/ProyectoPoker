@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableModel;
 import modelo.Evento;
@@ -74,6 +75,8 @@ public class Cliente implements Runnable {
                  setearModeloTabla(e);
                  registrarVentanaTabla(e);
                  leerMensaje(e);
+                 leerApuestas(e);
+                 leerNombresJugadores(e);
                  leerTerminarTurno(e);
                  Thread.sleep (15);
             }
@@ -118,13 +121,16 @@ public class Cliente implements Runnable {
         }
           }
     
-       public void leerTerminarTurno(Evento e){
+     public void leerTerminarTurno(Evento e){
         String terminar="";
         try {                 
                terminar = e.getMensaje();
                 
                 if(terminar.equals("Terminar") ){
-                   jugador.deshabilitarBotones(); 
+             
+                 
+                    jugador.deshabilitarBotones();
+
                    terminar = "";
                     }
                 }    
@@ -134,6 +140,121 @@ public class Cliente implements Runnable {
         
     }
     
+       public void leerApuestas(Evento e){
+        String terminar="";
+        try {                 
+               terminar = e.getMensaje();
+                
+                if(terminar.equals("DatosApuestas") ){
+         
+             
+                  ArrayList<String> puntos=(ArrayList<String>)e.getInfo();
+             
+                  if(nCliente.equals("1")){
+                      jugador.getLabApuesta1().setText(puntos.get(0));
+                       jugador.getLabApuesta2().setText(puntos.get(1));
+                        jugador.getLabApuesta3().setText(puntos.get(2));
+                  }
+                  
+                  else if(nCliente.equals("2")){
+                      jugador.getLabApuesta1().setText(puntos.get(1));
+                       jugador.getLabApuesta2().setText(puntos.get(0));
+                        jugador.getLabApuesta3().setText(puntos.get(2));
+                  }
+                  
+                  else{
+                      jugador.getLabApuesta1().setText(puntos.get(2));
+                       jugador.getLabApuesta2().setText(puntos.get(0));
+                        jugador.getLabApuesta3().setText(puntos.get(1));
+                  }
+                   jugador.getLabBote().setText(puntos.get(3));
+                  
+
+                   terminar = "";
+                    }
+                }    
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+    }
+       
+       public void leerNombresJugadores(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("Nombres")){
+                  ArrayList<String> nombres=(ArrayList<String>)e.getInfo();
+             
+                  if(nCliente.equals("1")){
+                      jugador.getLabNombre1().setText(nombres.get(0));
+                       jugador.getLabNombre2().setText(nombres.get(1));
+                        jugador.getLabNombre3().setText(nombres.get(2));
+                  }
+                  
+                  else if(nCliente.equals("2")){
+                      jugador.getLabNombre1().setText(nombres.get(1));
+                       jugador.getLabNombre2().setText(nombres.get(0));
+                        jugador.getLabNombre3().setText(nombres.get(2));
+                  }
+                  
+                  else{
+                      jugador.getLabNombre1().setText(nombres.get(2));
+                       jugador.getLabNombre2().setText(nombres.get(0));
+                        jugador.getLabNombre3().setText(nombres.get(1));
+                  }
+                  System.out.println("Nombres Cargados");
+              } 
+              mensaje = "";
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+       
+       public int leerMinimo(){
+           Evento e = null;
+          int min=0;
+          String minimo="";
+        try {         
+               e=(Evento)entrada.readObject();
+               minimo = e.getMensaje();
+                
+                if(minimo.equals("Minimo") ){
+                    min=(Integer)e.getInfo();
+                    minimo = "";
+                    return min;
+           
+                    }
+                }    
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+       return min;
+       }
+    
+       
+       public int leerMaximo(){
+           Evento e = null;
+          int max=0;
+          String maximo="";
+        try {         
+               e=(Evento)entrada.readObject();
+               maximo = e.getMensaje();
+                
+                if(maximo.equals("Maximo") ){
+                    max=(Integer)e.getInfo();
+                    maximo= "";
+                    return max;
+           
+                    }
+                }    
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+       return max;
+       }
+    
     public void leerTurnoCliente(Evento e){
         String turnoCliente="";
         try {                 
@@ -141,8 +262,9 @@ public class Cliente implements Runnable {
                 
                 if(turnoCliente.equals("turno")){
                      JOptionPane.showMessageDialog(null,"Es tu turno");
-         
-                    jugador.habilitarBotones();
+                     jugador.setMinimo(leerMinimo());
+                     jugador.setMaximo(leerMaximo());
+                     jugador.habilitarBotones();
                     turnoCliente = "";
                 }
                 
@@ -168,12 +290,16 @@ public class Cliente implements Runnable {
     
     
     
-     public void apostar(String apuesta){
+     public void apostar(){
         Evento e = null;
+        int apuesta=jugador.getCantApuesta();
         try {
-          e = new Evento(Integer.parseInt(nCliente),"Apostar",apuesta);
-          System.out.println("Enviando accion a Servidor");
-          salida.writeObject(e);
+                
+                e = new Evento(Integer.parseInt(nCliente),"Apostar",apuesta);
+                System.out.println("Enviando accion a Servidor");
+          
+                salida.writeObject(e);
+            
         }
         catch (Exception ex)
         { ex.printStackTrace();

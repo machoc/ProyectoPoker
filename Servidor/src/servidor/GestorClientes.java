@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import modelo.Evento;
@@ -151,9 +152,10 @@ public class GestorClientes implements Observer,Runnable {
      }
     }
     
-    public void escribirTerminarTurno(){
+     public void escribirTerminarTurno(){
         Evento e = null;
         try {
+     
           e = new Evento(++nEvento,"Terminar",null);
           salida.writeObject(e);
         }
@@ -161,6 +163,54 @@ public class GestorClientes implements Observer,Runnable {
         { ex.printStackTrace();
         }
    }
+    
+    public void escribirApuestas(ArrayList<String> apuestas){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"DatosApuestas",apuestas);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+    
+     public void escribirApuestaMinima(int apuesta){
+        Evento e = null;
+        try {
+          e = new Evento(++nEvento,"Minimo",apuesta);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+     public void escribirApuestaMaxima(int apuesta){
+        Evento e = null;
+        try {
+          e = new Evento(++nEvento,"Maximo",apuesta);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+      public void escribirNombresJugadores(ArrayList<String> nombres){
+        Evento e = null;
+        try {
+          e = new Evento(++nEvento,"Nombres",nombres);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+      
+       
+    
     
      public int getnEvento() {
         return nEvento;

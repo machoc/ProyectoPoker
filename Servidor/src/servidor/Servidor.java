@@ -69,8 +69,8 @@ public class Servidor {
                 }             
             }
             JOptionPane.showMessageDialog(null,"El máximo de jugadores es 3");
+               setNombresJugadores();
             while (true)  { 
-                System.out.println("Cantidad de Observadores: "+datos.countObservers());
                 controlarTurnos(); 
             }
         } catch (Exception e) {            
@@ -78,6 +78,29 @@ public class Servidor {
         }
     }
      
+     public void setNombresJugadores(){
+         ArrayList<String> nombres=new ArrayList<>();
+         for(int i=0; i<3;i++)
+             nombres.add(datos.getJugador(i).getNombre());
+         
+          for(GestorClientes cliente: clientes){
+              cliente.escribirNombresJugadores(nombres);
+              
+          }
+         
+        
+     }
+     
+     
+     public ArrayList<String> escribirApuestas(){
+         ArrayList<String> puntos=new ArrayList<>();
+         for(int i=0; i<3;i++)
+             puntos.add(String.valueOf(datos.getJugador(i).getCantidadApuesta()));
+         
+         puntos.add(String.valueOf(datos.getBote()));
+          
+        return puntos;
+     }
     
      
      public void controlarTurnos(){
@@ -87,18 +110,32 @@ public class Servidor {
         for(GestorClientes cliente: clientes){
             e = new Evento(cliente.getnEvento(),"turno",null);
             cliente.escribirEntrada(e);
+            cliente.escribirApuestaMinima(datos.getApuestaMinima());
+            cliente.escribirApuestaMaxima(datos.getApuestaMaxima(cliente.getnCliente()));
             
             
             
             apuesta= cliente.leerAccionCliente();
-            if(apuesta.getMensaje().equals("Pasar"))
+            if(apuesta.getMensaje().equals("Pasar")){
                 datos.pasar(apuesta);
-            else if(apuesta.getMensaje().equals("NoIr"))
+            }
+            else if(apuesta.getMensaje().equals("NoIr")){
                 datos.noIr(apuesta);
-            else if(apuesta.getMensaje().equals("Apostar"))
+            }
+            else if(apuesta.getMensaje().equals("Apostar")){
+                int cant=(Integer)apuesta.getInfo();
+              
+                datos.setApuestaJugador(cliente.getnCliente(),cant);
+                datos.setBote(cant);
+                datos.setApuestaMinima(datos.getApuestaMinima()+cant);  
                 datos.apostar(apuesta);
-            
-           cliente.escribirTerminarTurno();
+            } 
+            ArrayList<String> puntos=escribirApuestas();
+            for(GestorClientes client: clientes){
+               
+           client.escribirApuestas(puntos);
+            }
+            cliente.escribirTerminarTurno();
     }
         
      }

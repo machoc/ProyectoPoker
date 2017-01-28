@@ -2,6 +2,7 @@
 package modelo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 
 public class Jugador implements Serializable{
@@ -9,9 +10,19 @@ public class Jugador implements Serializable{
     public Jugador(String nombre, String nickname) {
         this.nombre = nombre;
         this.nickname = nickname;
-        this.dinero = 5000.0;
+        this.dinero = 5000;
+        mano=new ArrayList<>();
+        cantidadApuesta=0;
+        estado=null;
     }
 
+    public void  limpiarMano(){
+        mano.clear();
+    }
+    public void recibirCarta(Carta c){
+        mano.add(c);
+    }
+    
     public String getNombre() {
         return nombre;
     }
@@ -28,23 +39,36 @@ public class Jugador implements Serializable{
         this.nickname = nickname;
     }
 
-    public double getDinero() {
+    public int getDinero() {
         return dinero;
     }
 
-    public void setDinero(double dinero) {
+    public void setDinero(int dinero) {
         this.dinero = dinero;
     }
+    
+    public int getCantidadApuesta() {
+        return cantidadApuesta;
+    }
+
+    public void setCantidadApuesta(int cant) { 
+        
+        this.cantidadApuesta = cant ;
+        dinero-= cant;
+    }
+    
+    
     
     public static String[] nombreCampos(){
         return NOMBRE_CAMPOS;
     }
     
      public Object[] toArray(){
-        Object[] r = new Object[3];
+        Object[] r = new Object[4];
         r[0] = getNombre();
         r[1] = getNickname();
         r[2] = getDinero();
+        r[3] = getMano();
         return r;
     }
      
@@ -57,18 +81,29 @@ public class Jugador implements Serializable{
                 setNickname(aValue.toString());
                 break;
             case 2:
-                setDinero(((Double) aValue));
+                setDinero(((Integer) aValue));
+            case 3:
+                recibirCarta(((Carta) aValue));
             default:
                 throw new IndexOutOfBoundsException();
         }
       }
-    
+     private ArrayList<Carta> getMano() {
+            return mano;
+    }
     
     //Atributos
-    private String nombre;
-    private String nickname;
-    private double dinero;
-    
-    
-    private static final String[] NOMBRE_CAMPOS = {"Nombre", "Nickname", "Dinero"};
+      
+      
+        private ArrayList<Carta>  mano;
+        private String nombre;
+        private String nickname;
+        private int dinero;
+        private int cantidadApuesta;
+        private String estado;
+
+
+        private static final String[] NOMBRE_CAMPOS = {"Nombre", "Nickname", "Dinero"};
+
+   
 }

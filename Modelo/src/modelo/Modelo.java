@@ -22,6 +22,7 @@ public class Modelo extends Observable implements Serializable{
     public Modelo(){
         jugadores = new Jugadores();
         modeloTabla = new JugadoresTablaModelo(jugadores);
+        bote=0;
     }
     
     public void agregarJugadorMesa(Jugador nuevoJugador){
@@ -48,6 +49,34 @@ public class Modelo extends Observable implements Serializable{
      public void apostar(Evento e){
        actualizar("Apostar");
     }
+     
+     public void setApuestaMinima(int m){
+         apuestaMinima=m;
+     }
+     
+     public int getApuestaMaxima(int nCliente){
+         return jugadores.recuperarDatos(nCliente-1).getDinero();
+     }
+     
+      public void setBote(int m){
+         bote +=m;
+     }
+      
+      public Jugador getJugador(int n){
+          return jugadores.recuperarDatos(n);
+      }
+      
+      public void setApuestaJugador(int nCliente, int cant){
+         jugadores.recuperarDatos(nCliente-1).setCantidadApuesta(cant);
+     }
+     
+     public int getBote(){
+         return bote;
+     }
+     
+     public int getApuestaMinima(){
+         return apuestaMinima;
+     }
     
     public void actualizar(Object evento){
         setChanged();
@@ -62,8 +91,10 @@ public class Modelo extends Observable implements Serializable{
     //----------------ATRIBUTOS----------------------
     private Jugadores jugadores;
     private JugadoresTablaModelo modeloTabla;
+    private int apuestaMinima = 50;
+    private int bote;
     
-    public static final int MAX_JUGADORES = 2;
+    public static final int MAX_JUGADORES = 3;
     
     //----------------------------------------------
 }

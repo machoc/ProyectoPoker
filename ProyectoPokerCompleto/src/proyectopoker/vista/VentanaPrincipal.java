@@ -166,7 +166,7 @@ public class VentanaPrincipal extends JFrame {
        panelJugador1Info.setOpaque(false);
        panelJugador1Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
        labNombreJugador1=new JLabel("NOMBRE",JLabel.CENTER);
-       labApuestaJugador1=new JLabel("APUESTA",JLabel.CENTER);
+       labApuestaJugador1=new JLabel("0",JLabel.CENTER);
        panelJugador1Info.add(labApuestaJugador1,BorderLayout.SOUTH);
        panelJugador1Info.add(labNombreJugador1,BorderLayout.CENTER);
        panelJugador1Cartas = new JPanel();
@@ -189,7 +189,7 @@ public class VentanaPrincipal extends JFrame {
        panelJugador2Info.setOpaque(false);
        panelJugador2Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
        labNombreJugador2=new JLabel("NOMBRE",JLabel.CENTER);
-       labApuestaJugador2=new JLabel("APUESTA",JLabel.CENTER);
+       labApuestaJugador2=new JLabel("0",JLabel.CENTER);
        panelJugador2Info.add(labApuestaJugador2,BorderLayout.SOUTH);
        panelJugador2Info.add(labNombreJugador2,BorderLayout.CENTER);
        panelJugador2Cartas = new JPanel();
@@ -212,7 +212,7 @@ public class VentanaPrincipal extends JFrame {
        panelJugador3Info.setOpaque(false);
        panelJugador3Info.setBorder(BorderFactory.createEmptyBorder(0,0,5,0));
        labNombreJugador3=new JLabel("NOMBRE",JLabel.CENTER);
-       labApuestaJugador3=new JLabel("APUESTA",JLabel.CENTER);
+       labApuestaJugador3=new JLabel("0",JLabel.CENTER);
        panelJugador3Info.add(labApuestaJugador3,BorderLayout.SOUTH);
        panelJugador3Info.add(labNombreJugador3,BorderLayout.CENTER);
        panelJugador3Cartas = new JPanel();
@@ -243,7 +243,7 @@ public class VentanaPrincipal extends JFrame {
         
         panelDerecho.add(panelDerechoInferior);
         Font font = new Font(Font.SANS_SERIF,Font.BOLD,20);
-        labBoteMesa=new JLabel("$1000");
+        labBoteMesa=new JLabel("0");
         labBoteMesa.setFont(font);
         labBoteMesa.setForeground(Color.WHITE);
         panelDerechoInferior.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
@@ -297,11 +297,16 @@ public class VentanaPrincipal extends JFrame {
         sliderApostar = new JSlider();
         panelBotones.add(sliderApostar);
         txtCantidadApuesta= new JTextField(5);
+        txtCantidadApuesta.setEditable(false);
          panelBotones.add(txtCantidadApuesta);
         panelInferior.add(panelBotones,BorderLayout.CENTER);
         
         
         
+    }
+    
+    public void setMinimo(int x){
+        sliderApostar.setMinimum(x);
     }
     
     public void setMaximo(int x){
@@ -373,7 +378,7 @@ public class VentanaPrincipal extends JFrame {
          btnApostar.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent ae) {
-                 cliente.apostar(labApuestaJugador3.getText());
+                 cliente.apostar();
              }
          });
          sliderApostar.addChangeListener(new ChangeListener() {
@@ -405,6 +410,38 @@ public class VentanaPrincipal extends JFrame {
        return new ImageIcon(getClass().getResource("../vista/imagenes/Cartas/"+valor+palo+".png"));  
     }
     
+    public JLabel getLabApuesta1(){
+        return labApuestaJugador1;
+    }
+    
+     public JLabel getLabApuesta2(){
+        return labApuestaJugador2;
+    }
+     
+      public JLabel getLabApuesta3(){
+        return labApuestaJugador3;
+    }
+      
+       public JLabel getLabBote(){
+        return labBoteMesa;
+    }
+       
+       public JLabel getLabNombre1(){
+        return labNombreJugador1;
+    }
+       
+       public JLabel getLabNombre2(){
+        return labNombreJugador2;
+    }
+       
+       public JLabel getLabNombre3(){
+        return labNombreJugador3;
+    }
+     
+    
+    public int getCantApuesta(){
+        return Integer.parseInt(txtCantidadApuesta.getText());
+    }
 
     
     //---------------------------------------------------------------------------
