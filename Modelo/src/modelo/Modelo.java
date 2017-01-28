@@ -26,6 +26,7 @@ public class Modelo extends Observable implements Serializable{
         bote=0;
         mazo=new Mazo();
         cartasCentrales=new ArrayList<>();
+        estadoMesa="InicioRonda";
     }
     
     public void agregarJugadorMesa(Jugador nuevoJugador){
@@ -77,6 +78,14 @@ public class Modelo extends Observable implements Serializable{
          jugadores.recuperarDatos(nCliente-1).setCantidadApuesta(cant);
      }
       
+         public String getEstadoMesa(){
+          return estadoMesa;
+      }
+      
+      public void setEstadoMesa(String est){
+         estadoMesa=est;
+     }
+      
       public Mazo getMazo(){
           return mazo;
       }
@@ -109,6 +118,7 @@ public class Modelo extends Observable implements Serializable{
     private int apuestaMinima = 50;
     private int bote;
     private ArrayList<Carta> cartasCentrales;
+    private String estadoMesa;
     
     public static final int MAX_JUGADORES = 3;
     

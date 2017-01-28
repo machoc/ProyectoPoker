@@ -76,6 +76,9 @@ public class Cliente implements Runnable {
                  setearModeloTabla(e);
                  registrarVentanaTabla(e);
                  leerFlop(e);
+                 leerManos(e);
+                 leerTurn(e);
+                 leerRiver(e);
                  leerMensaje(e);
                  leerDeshabilitarPasar(e);
                  leerApuestas(e);
@@ -130,7 +133,7 @@ public class Cliente implements Runnable {
               mensaje=e.getMensaje();
               if(mensaje.equals("Flop")){
                  System.out.println("Cargando Flop");
-                jugador.cargarFlop((ArrayList<Carta>)e.getInfo());
+                 jugador.cargarFlop((ArrayList<String>)e.getInfo());
                  mensaje = "";
               }
                 }
@@ -138,6 +141,52 @@ public class Cliente implements Runnable {
             System.err.println(ex.getMessage());
         }
           }
+     
+      public void leerManos(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("Manos")){
+                 System.out.println("Cargando Manos");
+                 jugador.cargarManos((ArrayList<String>)e.getInfo(),nCliente);
+                 mensaje = "";
+              }
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+     
+     public void leerTurn(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("Turn")){
+                 System.out.println("Cargando Turn");
+                 jugador.cargarTurn((ArrayList<String>)e.getInfo());
+                 mensaje = "";
+              }
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+     
+     public void leerRiver(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("River")){
+                 System.out.println("Cargando River");
+                 jugador.cargarRiver((ArrayList<String>)e.getInfo());
+                 mensaje = "";
+              }
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+     
      public void leerDeshabilitarPasar(Evento e){
         String terminar="";
         try {                 

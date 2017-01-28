@@ -176,10 +176,8 @@ public class VentanaPrincipal extends JFrame {
        panelJugador1.add(panelJugador1Cartas);
        cartasJug1=new ArrayList<>();
        for(int i = 0; i < 2; i++){
-           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
-           ImageIcon icon = new ImageIcon(url);
            cartasJug1.add(new JLabel());
-           cartasJug1.get(i).setIcon(icon);
+           cartasJug1.get(i).setVisible(false);
            panelJugador1Cartas.add( cartasJug1.get(i));
        }
        
@@ -199,10 +197,8 @@ public class VentanaPrincipal extends JFrame {
        panelJugador2.add(panelJugador2Cartas);
        cartasJug2=new ArrayList<>();
        for(int i = 0; i < 2; i++){
-           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
-           ImageIcon icon = new ImageIcon(url);
            cartasJug2.add(new JLabel());
-           cartasJug2.get(i).setIcon(icon);
+           cartasJug2.get(i).setVisible(false);
            panelJugador2Cartas.add( cartasJug2.get(i));
        }
        
@@ -222,10 +218,8 @@ public class VentanaPrincipal extends JFrame {
        panelJugador3.add(panelJugador3Cartas);
        cartasJug3=new ArrayList<>();
        for(int i = 0; i < 2; i++){
-           URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
-           ImageIcon icon = new ImageIcon(url);
            cartasJug3.add(new JLabel());
-           cartasJug3.get(i).setIcon(icon);
+           cartasJug3.get(i).setVisible(false);
            panelJugador3Cartas.add( cartasJug3.get(i));
        }
        
@@ -304,13 +298,57 @@ public class VentanaPrincipal extends JFrame {
         
     }
     
-    public void cargarFlop(ArrayList<Carta> cartas){
-        for(int i =0;i<3;i++){
-            Carta c=cartas.get(i);
-            cartasCentrales.get(i).setIcon(buscarImagenes(c.getValor(),c.getPalo()));
-            cartasCentrales.get(i).setVisible(true);
+    public void cargarFlop(ArrayList<String> cartas){
+        int cont=0;
+        for(int i =0;i<6;i+=2){
+            cartasCentrales.get(cont).setIcon(buscarImagenes(cartas.get(i),cartas.get(i+1)));
+            cartasCentrales.get(cont).setVisible(true);
+            cont++;
         }
     }
+    
+    public void cargarTurn(ArrayList<String> cartas){
+        for(int i =0;i<1;i++){
+            cartasCentrales.get(3).setIcon(buscarImagenes(cartas.get(i),cartas.get(i+1)));
+            cartasCentrales.get(3).setVisible(true);
+        }
+    }
+    
+      public void cargarManos(ArrayList<String> cartas, String nCliente){
+          URL url = getClass().getResource("../vista/imagenes/Cartas/ParteAtras.png");  
+          ImageIcon parteAtras = new ImageIcon(url);
+           int cont =0;
+          if(nCliente.equals("1")){
+              cont =0;
+          }
+          else if(nCliente.equals("2")){
+              cont =4;
+          }
+          else
+              cont=8;
+          
+             for(int i =0;i<2;i++){
+            cartasJug1.get(i).setIcon(buscarImagenes(cartas.get(cont),cartas.get(cont+1)));
+            cartasJug1.get(i).setVisible(true);
+            cont+=2;
+             }
+              for(int i =0;i<2;i++){
+             cartasJug2.get(i).setIcon(parteAtras);
+             cartasJug2.get(i).setVisible(true);
+             cartasJug3.get(i).setIcon(parteAtras);
+             cartasJug3.get(i).setVisible(true);
+              }
+        }
+        
+             
+      public void cargarRiver(ArrayList<String> cartas){
+        for(int i =0;i<1;i++){
+            cartasCentrales.get(4).setIcon(buscarImagenes(cartas.get(i),cartas.get(i+1)));
+            cartasCentrales.get(4).setVisible(true);
+        }
+    }
+    
+    
     
     public void deshabilitarPasar(){
         btnPasar.setEnabled(false);
@@ -417,7 +455,7 @@ public class VentanaPrincipal extends JFrame {
     btnApostar.setEnabled(false);
     }
     
-    public ImageIcon buscarImagenes(String palo, String valor){
+    public ImageIcon buscarImagenes(String valor, String palo){
        return new ImageIcon(getClass().getResource("../vista/imagenes/Cartas/"+valor+palo+".png"));  
     }
     

@@ -116,11 +116,47 @@ public class Servidor {
      public void controlarTurnos(){
         Evento e = null;
         Evento apuesta= null;
-       if(comprobarPasar()){
-           ArrayList<Carta> c=cargarFlop();
+        
+         if(datos.getEstadoMesa().equals("InicioRonda")){
+           ArrayList<String> manos = new ArrayList<>();
+           datos.setEstadoMesa("Flop");
+           for(GestorClientes cliente: clientes){
+            ArrayList<String> c =cargarManos(cliente.getnCliente());
+            for(int i=0;i<4;i++){
+                manos.add(c.get(i));
+            }
+           }
+           for(GestorClientes cliente: clientes){
+           cliente.escribirManos(manos);
+           }
+       }
+        
+        
+        
+       if(comprobarPasar()&& datos.getEstadoMesa().equals("Flop")){
+           ArrayList<String> c=cargarFlop();
+           datos.setEstadoMesa("Turn");
            for(GestorClientes cliente: clientes){
             datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
             cliente.escribirFlop(c);
+           }
+       }
+       
+       if(comprobarPasar()&& datos.getEstadoMesa().equals("Turn")){
+           ArrayList<String> c=cargarTurn();
+           datos.setEstadoMesa("River");
+           for(GestorClientes cliente: clientes){
+            datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
+            cliente.escribirTurn(c);
+           }
+       }
+       
+       if(comprobarPasar()&& datos.getEstadoMesa().equals("River")){
+           ArrayList<String> c=cargarRiver();
+           datos.setEstadoMesa("FinRonda");
+           for(GestorClientes cliente: clientes){
+            datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
+            cliente.escribirRiver(c);
            }
        }
         
@@ -181,11 +217,46 @@ public class Servidor {
         
      }
      
-     public ArrayList<Carta> cargarFlop(){
-         ArrayList<Carta> cartas = new ArrayList<>();
+     
+     public ArrayList<String> cargarManos(int nCliente){
+         ArrayList<String> cartas = new ArrayList<>();
+         for(int i=0;i<2;i++){
+             Carta c=datos.getMazo().devolverCarta();
+             cartas.add(c.getValor());
+             cartas.add(c.getPalo());
+             datos.getJugador(nCliente-1).recibirCarta(c);
+         }
+         return cartas;
+     }
+     
+     public ArrayList<String> cargarFlop(){
+         ArrayList<String> cartas = new ArrayList<>();
          for(int i=0;i<3;i++){
              Carta c=datos.getMazo().devolverCarta();
-             cartas.add(c);
+             cartas.add(c.getValor());
+             cartas.add(c.getPalo());
+             datos.getCartasCentrales().add(c);
+         }
+         return cartas;
+     }
+     
+      public ArrayList<String> cargarTurn(){
+         ArrayList<String> cartas = new ArrayList<>();
+         for(int i=0;i<1;i++){
+             Carta c=datos.getMazo().devolverCarta();
+             cartas.add(c.getValor());
+             cartas.add(c.getPalo());
+             datos.getCartasCentrales().add(c);
+         }
+         return cartas;
+     }
+      
+       public ArrayList<String> cargarRiver(){
+         ArrayList<String> cartas = new ArrayList<>();
+         for(int i=0;i<1;i++){
+             Carta c=datos.getMazo().devolverCarta();
+             cartas.add(c.getValor());
+             cartas.add(c.getPalo());
              datos.getCartasCentrales().add(c);
          }
          return cartas;

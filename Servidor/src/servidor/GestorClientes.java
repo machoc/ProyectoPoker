@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import modelo.Carta;
 import modelo.Evento;
 
 
@@ -164,11 +165,50 @@ public class GestorClientes implements Observer,Runnable {
         }
    }
      
-     public void escribirFlop(Object flop){
+     public void escribirManos(ArrayList<String> manos){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"Manos",manos);
+          System.out.println("Enviando Manos" );
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+     public void escribirFlop(ArrayList<String> flop){
         Evento e = null;
         try {
      
           e = new Evento(++nEvento,"Flop",flop);
+          System.out.println("Enviando Flop" );
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+     public void escribirTurn(ArrayList<String> turn){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"Turn",turn);
+          System.out.println("Enviando Turn" );
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+     public void escribirRiver(ArrayList<String> river){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"River",river);
           System.out.println("Enviando Flop" );
           salida.writeObject(e);
         }
