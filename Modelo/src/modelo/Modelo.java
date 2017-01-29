@@ -27,6 +27,7 @@ public class Modelo extends Observable implements Serializable{
         mazo=new Mazo();
         cartasCentrales=new ArrayList<>();
         estadoMesa="InicioRonda";
+        puntosMano = 0;
     }
     
     public void agregarJugadorMesa(Jugador nuevoJugador){
@@ -99,6 +100,101 @@ public class Modelo extends Observable implements Serializable{
      public int getApuestaMinima(){
          return apuestaMinima;
      }
+     
+     public void evaluarManos(){
+         
+     }
+     
+     public int verMano(ArrayList<Integer> array,int nCliente){
+         ArrayList<Carta> mano = new ArrayList<>(5);
+            for (int i=1;i<4;i++)
+                mano.get(i-1).equals(cartasCentrales.get(array.get(i)));
+
+            for (int i=0;i<2;i++)
+                mano.get(i+3).equals(jugadores.recuperarDatos(nCliente).getMano());
+
+            return obtenerJugada(mano);
+     }
+     
+     public int obtenerJugada(ArrayList<Carta> mano){
+        int escalera, color, trio, poker, full, par, alta;
+        int k;
+        escalera = color = trio = poker = full = par = alta = 0;
+        k = 0;
+        while (k < 4 && mano.get(k).getPalo().equals(mano.get(k + 1).getPalo()))
+            k++;
+        if (k==4){
+            color = 1;
+        }
+        /* Revisa si gana por escalera*/
+        k=0;
+        while (k < 4 && mano.get(k).getValor().equals(Integer.parseInt(mano.get(k+1).getValor())-1))
+            k++;
+        if (k == 4){
+            escalera = 1;
+        }
+        /* revisa si gana por poker */
+        for (int i=0;i<2;i++){
+            k = i;
+            while (k < i+3 && mano.get(k).getValor().equals(mano.get(k+1).getValor()))
+                k++;
+            if ( k== i+3){
+                poker = 1;
+                alta = Integer.parseInt(mano.get(i).getValor());
+            }
+        }
+        /*revisa si gana por trio o por fullhouse*/
+        if (poker == 0){
+            for (int i=0;i<3;i++){
+                k = i;
+                while (k < i+2 && mano.get(k).getValor().equals(mano.get(k+1).getValor()));
+                k++;
+                if (k==i+2){
+                    trio = 1;
+                    alta = Integer.parseInt(mano.get(i).getValor());
+                    if (i==0){
+                        if (mano.get(3).getValor().equals(mano.get(4).getValor()))
+                            full=1;
+                    }
+                    else if(i==1){
+                        if (mano.get(0).getValor().equals(mano.get(4).getValor()))
+                            full=1;
+                    }
+                    else{
+                        if (mano.get(0).getValor().equals(mano.get(1).getValor()))
+                            full=1;
+                    }
+                }
+            }
+        }
+        if (escalera==1 && color==1)
+            return 170 + Integer.parseInt(mano.get(4).getValor());
+        else if(poker==1)
+            return 150 + alta;
+        else if(full==1)
+            return 130 + alta;
+        else if(color==1)
+            return 110;
+        else if(escalera==1)
+            return 90 + Integer.parseInt(mano.get(4).getValor());
+        else if(trio==1)
+            return 70 + alta;
+        /* revisa si es pareja*/
+        for (k=0;k<4;k++)
+            if (mano.get(k).getValor().equals(mano.get(k+1).getValor())){
+                par++;
+                if (Integer.parseInt(mano.get(k).getValor()) > alta)
+                    alta = Integer.parseInt(mano.get(k).getValor());
+            }
+        switch (par) {
+            case 2:
+                return 50 + alta;
+            case 1:
+                return 30 + alta;
+            default:
+                return Integer.parseInt(mano.get(4).getValor());
+        }
+     }
     
     public void actualizar(Object evento){
         setChanged();
@@ -119,6 +215,7 @@ public class Modelo extends Observable implements Serializable{
     private int bote;
     private ArrayList<Carta> cartasCentrales;
     private String estadoMesa;
+    private int puntosMano;
     
     public static final int MAX_JUGADORES = 3;
     

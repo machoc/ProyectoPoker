@@ -94,7 +94,7 @@ public class Jugador implements Serializable{
                 throw new IndexOutOfBoundsException();
         }
       }
-     private ArrayList<Carta> getMano() {
+     public ArrayList<Carta> getMano() {
             return mano;
     }
     
