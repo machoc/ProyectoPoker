@@ -101,9 +101,41 @@ public class Modelo extends Observable implements Serializable{
          return apuestaMinima;
      }
      
-     public void evaluarManos(){
-         
-     }
+     /*public void evaluarManos(){
+        ArrayList<Integer> manos = new ArrayList<>(10);
+        int k;
+        int puntos;
+        for (int q=0;q<3;q++){
+                if (jugadores.recuperarDatos(q).getEstado().equals("Jugando")){
+                    manos.get(0).equals(-1); 
+                    k = 0;
+                    while(manos.get(0).equals(1)){
+                        if (manos.get(k)<4){
+                            manos.get(k+1).equals(manos.get(k)+1);
+                            k++;
+                        }
+
+                        else{
+                            manos.get(k-1)++;
+                            k--;
+                        }
+
+                        if (k==0)
+                            break;
+
+                        if (k==3){
+                            puntos = verMano(manos,q);
+                            if (puntos>puntosMano[q]){
+                                puntosMano[q] = puntos;
+                                for (int x=0;x<3;x++)
+                                    mejorMano[q][x] = stack[x+1];
+                            }
+                        }
+                    }
+
+                }
+            }
+     }*/
      
      public int verMano(ArrayList<Integer> array,int nCliente){
          ArrayList<Carta> mano = new ArrayList<>(5);
