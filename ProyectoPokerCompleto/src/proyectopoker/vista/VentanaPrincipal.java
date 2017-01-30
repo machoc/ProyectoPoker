@@ -137,7 +137,10 @@ public class VentanaPrincipal extends JFrame {
         menu=new JMenuBar();
         menuArchivo=new JMenu("ARCHIVO");
         menuArchivoSalir=new JMenuItem("SALIR");
+        menuNuevaPartida=new JMenuItem("NUEVA PARTIDA");
+        menuNuevaPartida.setEnabled(false);
         menuArchivo.add(menuArchivoSalir);
+         menuArchivo.add(menuNuevaPartida);
         menu.add(menuArchivo);
         menuPartida=new JMenu("PARTIDA");
         menuPartidaPosiciones=new JMenuItem("VER POSICIONES");
@@ -326,18 +329,136 @@ public class VentanaPrincipal extends JFrame {
           }
           else
               cont=8;
-          
+          if(!cartas.get(cont).equals("Fuera")){
              for(int i =0;i<2;i++){
             cartasJug1.get(i).setIcon(buscarImagenes(cartas.get(cont),cartas.get(cont+1)));
             cartasJug1.get(i).setVisible(true);
             cont+=2;
              }
+          }
+          int cont1=0;
+          int cont2=0;
+          if(nCliente.equals("1")){
+              cont1 =4;
+              cont2 =8;
+          }
+          else if(nCliente.equals("2")){
+              cont1 =0;
+              cont2 =8;
+          }
+          else{
+             cont1 =0;
+              cont2 =4;
+          }
+          if(!cartas.get(cont1).equals("Fuera")){
               for(int i =0;i<2;i++){
              cartasJug2.get(i).setIcon(parteAtras);
              cartasJug2.get(i).setVisible(true);
+              }
+          }
+          if(!cartas.get(cont2).equals("Fuera")){ 
+              for(int i =0;i<2;i++){
              cartasJug3.get(i).setIcon(parteAtras);
              cartasJug3.get(i).setVisible(true);
               }
+          }
+          cartasJugadores=cartas;
+        }
+        
+      
+      public void cargarCartasJugadores(String nCliente){
+          
+          int cont1=0;
+          int cont2=0;
+          if(nCliente.equals("1")){
+              cont1 =4;
+              cont2 =8;
+          }
+          else if(nCliente.equals("2")){
+              cont1 =0;
+              cont2 =8;
+          }
+          else{
+             cont1 =0;
+              cont2 =4;
+          }
+          if(!cartasJugadores.get(cont1).equals("Fuera")){
+              for(int i =0;i<2;i++){
+             cartasJug2.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug2.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+           if(!cartasJugadores.get(cont2).equals("Fuera")){ 
+              for(int i =0;i<2;i++){
+             cartasJug3.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont2),cartasJugadores.get(cont2+1)));
+             cartasJug3.get(i).setVisible(true);
+             cont2+=2;
+              }
+          }
+        }
+      
+      public void voltearCartas(String clienteVoltear, String nCliente){
+          
+          int cont1=0;
+          if(nCliente.equals(clienteVoltear)){
+             return;
+          }
+          else if(nCliente.equals("1")&& clienteVoltear.equals("2")){
+              cont1 =4;
+               for(int i =0;i<2;i++){
+             cartasJug2.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug2.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+          
+          else if(nCliente.equals("1")&& clienteVoltear.equals("3")){
+              cont1 =8;
+               for(int i =0;i<2;i++){
+             cartasJug3.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug3.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+          
+          else if(nCliente.equals("2")&& clienteVoltear.equals("1")){
+              cont1 =0;
+               for(int i =0;i<2;i++){
+             cartasJug2.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug2.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+          
+          else if(nCliente.equals("2")&& clienteVoltear.equals("3")){
+              cont1 =8;
+               for(int i =0;i<2;i++){
+             cartasJug3.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug3.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+          
+          else if(nCliente.equals("3")&& clienteVoltear.equals("1")){
+              cont1 =0;
+               for(int i =0;i<2;i++){
+             cartasJug2.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug2.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+          
+          else if(nCliente.equals("3")&& clienteVoltear.equals("2")){
+              cont1 =4;
+               for(int i =0;i<2;i++){
+             cartasJug3.get(i).setIcon(buscarImagenes(cartasJugadores.get(cont1),cartasJugadores.get(cont1+1)));
+             cartasJug3.get(i).setVisible(true);
+             cont1+=2;
+              }
+          }
+          
+         
         }
         
              
@@ -383,6 +504,13 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 cerrarAplicacion();
+            }});
+         
+         menuNuevaPartida.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                cliente.nuevaPartida();
+                menuNuevaPartida.setEnabled(false);
             }});
          
          final ImageIcon imagen = new ImageIcon(getClass().getResource("../vista/imagenes/poker_jugadas.png")); 
@@ -443,6 +571,20 @@ public class VentanaPrincipal extends JFrame {
         this.setVisible(true);
     }
     
+    public void ocultarCartasJugadores(){
+        for (int i=0;i<2;i++){
+            cartasJug1.get(i).setVisible(false);
+            cartasJug2.get(i).setVisible(false);
+            cartasJug3.get(i).setVisible(false);
+        }
+    }
+    
+     public void ocultarCartasMesa(){
+        for (int i=0;i<5;i++){
+           cartasCentrales.get(i).setVisible(false);
+        }
+    }
+     
     public void habilitarBotones(){
     btnNoIr.setEnabled(true);
     btnPasar.setEnabled(true);
@@ -456,7 +598,18 @@ public class VentanaPrincipal extends JFrame {
     }
     
     public ImageIcon buscarImagenes(String valor, String palo){
-       return new ImageIcon(getClass().getResource("../vista/imagenes/Cartas/"+valor+palo+".png"));  
+        String valorAux;
+        if(valor.equals("14"))
+            valorAux="As";
+        else if(valor.equals("11"))
+             valorAux="J";
+        else if(valor.equals("12"))
+             valorAux="Q";
+        else if(valor.equals("13"))
+             valorAux="K";
+        else 
+            valorAux=valor;
+       return new ImageIcon(getClass().getResource("../vista/imagenes/Cartas/"+valorAux+palo+".png"));  
     }
     
     public JLabel getLabApuesta1(){
@@ -485,6 +638,10 @@ public class VentanaPrincipal extends JFrame {
        
        public JLabel getLabNombre3(){
         return labNombreJugador3;
+    }
+       
+       public void habilitarNuevaPartida(){
+       menuNuevaPartida.setEnabled(true);
     }
      
     
@@ -524,7 +681,7 @@ public class VentanaPrincipal extends JFrame {
     private ArrayList<JLabel> cartasJug1;
     private ArrayList<JLabel> cartasJug2;
     private ArrayList<JLabel> cartasJug3;
-    
+    private ArrayList<String> cartasJugadores;
     
     private JMenuBar menu;
     private JMenuItem menuArchivo;
@@ -534,6 +691,7 @@ public class VentanaPrincipal extends JFrame {
     private JMenuItem menuAyuda;
     private JMenuItem menuAcerca;
     private JMenuItem menuHelp;
+     private JMenuItem menuNuevaPartida;
     
     private JButton btnNoIr;
     private JButton btnPasar;

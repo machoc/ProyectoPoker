@@ -101,38 +101,80 @@ public class GestorClientes implements Observer,Runnable {
         }
         return e.getInfo();
     }
+      
+       public String leerNuevaPartida(){
+        Evento e = null;
+        try {
+              e =  (Evento)entrada.readObject();
+                           
+        } catch (ClassNotFoundException ex) {
+                    
+                } 
+        catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return e.getMensaje();
+    }
+
 
     @Override
     public void update(Observable mod, Object objeto) {
      
         if(objeto instanceof String){
-           switch ((String)objeto){
-              
-               
-               case "Apostar":{
-                   String mensaje ="El Jugador Aposto";
-                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
-                   
+            String obj=(String)objeto;
+           
+               if (obj.substring(0, 4).equals("NoIr")){
+                   String mensaje =obj.substring(4, obj.length())+" no va ir";
+                  escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
                }
-               break;
                
-               case "Pasar":{
-                   String mensaje ="El  Jugador Paso";
+               
+               
+               else if (obj.substring(0, 5).equals("Pasar")){
+                   String mensaje =obj.substring(5, obj.length())+" Paso";
                     escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
                 
                }
-               break;    
+               
+                else  if( obj.substring(0, 5).equals("Fuera") ){
+                   String mensaje = obj.substring(6, obj.length())+" se ha Quedado sin Dinero";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                    escribirFuera(obj.substring(5, 6));
+                   
+               }else  if( obj.substring(0, 7).equals("Voltear") ){
+                    escribirEntrada(new Evento(nEvento++,"Voltear",obj.substring(7, obj.length())));
+                   
+               } 
                        
-                case "NoIr":{
-                   String mensaje ="El Jugador no va ir";
-                  escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                else  if( obj.substring(0, 7).equals("Ganador") ){
+                   String mensaje = obj.substring(7, obj.length())+" Gano la Ronda";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                   
                }
-               break; 
-                    
-           }
+                
+                 
+                    else if( obj.substring(0, 7).equals("Apostar") ){
+                   String mensaje = obj.substring(7, obj.length())+" Aposto";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                   
+               }
+         
+                 
+                 else if (obj.equals("NuevaPartida")){
+                   String mensaje ="Se ha Iniciado una Nueva Partida";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                
+               }
+               
+               else  if( obj.equals("NuevaRonda") ){
+                    escribirEntrada(new Evento(nEvento++,"NuevaRonda",nCliente));
         }
-           
-    
+               else  if( obj.substring(0, 14).equals("GanadorPartida") ){
+                   String mensaje = obj.substring(14, obj.length())+" Gano la Partida"+"\n Felicidades...!!!";
+                    escribirEntrada(new Evento(nEvento++,"Mensaje",mensaje));
+                   
+               }
+        }
     }
 
     @Override
@@ -165,12 +207,27 @@ public class GestorClientes implements Observer,Runnable {
         }
    }
      
+      
+     
      public void escribirManos(ArrayList<String> manos){
         Evento e = null;
         try {
      
           e = new Evento(++nEvento,"Manos",manos);
           System.out.println("Enviando Manos" );
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+     
+     public void escribirHabilitarNuevaPartida(){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"NuevaPartida",null);
+    
           salida.writeObject(e);
         }
         catch (Exception ex)
@@ -209,7 +266,7 @@ public class GestorClientes implements Observer,Runnable {
         try {
      
           e = new Evento(++nEvento,"River",river);
-          System.out.println("Enviando Flop" );
+          System.out.println("Enviando River" );
           salida.writeObject(e);
         }
         catch (Exception ex)
@@ -252,6 +309,21 @@ public class GestorClientes implements Observer,Runnable {
         { ex.printStackTrace();
         }
    }
+    
+    public void escribirFuera(String nCliente){
+        Evento e = null;
+        try {
+     
+          e = new Evento(++nEvento,"Fuera",nCliente);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+   }
+    
+    
+    
      public void escribirApuestaMinima(int apuesta){
         Evento e = null;
         try {
@@ -263,6 +335,7 @@ public class GestorClientes implements Observer,Runnable {
         }
    }
      
+    
      public void escribirApuestaMaxima(int apuesta){
         Evento e = null;
         try {

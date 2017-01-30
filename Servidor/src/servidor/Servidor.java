@@ -60,8 +60,7 @@ public class Servidor {
                     nuevoCliente.setearModeloTabla(datos.modeloTabla());
                     nuevoCliente.registrarVentanaTabla(datos);
                  
-                  
-                  
+       
                         
                 } catch (SocketTimeoutException e) {
                     // No se ha conectado ningún cliente.
@@ -69,10 +68,15 @@ public class Servidor {
                     
                 }             
             }
-            JOptionPane.showMessageDialog(null,"El máximo de jugadores es 3");
+            System.out.println("Se ha alcanzado el limite de jugadores");
                setNombresJugadores();
             while (true)  { 
+                if(aux)
                 controlarTurnos(); 
+                else{
+                 nuevaPartida();
+                 
+                }
             }
         } catch (Exception e) {            
             System.err.println(e.getMessage());
@@ -92,6 +96,8 @@ public class Servidor {
         
      }
      
+    
+     
      
      public ArrayList<String> escribirApuestas(){
          ArrayList<String> puntos=new ArrayList<>();
@@ -105,7 +111,7 @@ public class Servidor {
      
      public boolean comprobarPasar(){
          for(int i=0;i<3;i++){
-             if(!datos.getJugador(clientes.get(i).getnCliente()-1).getEstado().equals("Pasar"))
+             if(datos.getJugador(clientes.get(i).getnCliente()-1).getEstado().equals("Jugando"))
                  return false;
          }
          return true;
@@ -117,11 +123,51 @@ public class Servidor {
         Evento e = null;
         Evento apuesta= null;
         
+        if(comprobarPasar()&& datos.getEstadoMesa().equals("FinRonda")){
+           datos.evaluarManos();
+           int clienteGanador= datos.buscarGanador();
+           
+            for(GestorClientes cliente: clientes){
+                datos.getJugador(cliente.getnCliente()-1).setDinero(-datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta());
+            }
+            if(!datos.getJugador(clienteGanador).getEstado().equals("AllInMin")){
+           datos.getJugador(clienteGanador).setDinero(datos.getBote());
+           }
+           else{
+                int boteGanador = datos.getJugador(clienteGanador).getCantidadApuesta()*2;
+                int botePerdedores =(datos.getBote()-boteGanador)/2;
+                 datos.getJugador(clienteGanador).setDinero(boteGanador);
+                for(GestorClientes cliente: clientes){
+                    if(cliente.getnCliente()-1 != clienteGanador)
+                        datos.getJugador(cliente.getnCliente()-1).setDinero(botePerdedores);
+            }
+           }
+            datos.escribirGanadorRonda(clienteGanador);
+           
+           resetearRonda();
+           if(datos.comprobarGanadorPartida()){
+               int ganadorPartida = datos.buscarGanadorPartida();
+                datos.escribirGanadorPartida(ganadorPartida);
+                
+                aux=false;
+               return;
+           }
+           
+       }
+        
          if(datos.getEstadoMesa().equals("InicioRonda")){
            ArrayList<String> manos = new ArrayList<>();
            datos.setEstadoMesa("Flop");
            for(GestorClientes cliente: clientes){
-            ArrayList<String> c =cargarManos(cliente.getnCliente());
+               ArrayList<String> c = new ArrayList<>();
+               if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Fuera")){
+                   for(int i=0;i<4;i++){
+                       c.add("Fuera");
+                   }
+               }
+               else
+                     c =cargarManos(cliente.getnCliente());
+               
             for(int i=0;i<4;i++){
                 manos.add(c.get(i));
             }
@@ -137,7 +183,9 @@ public class Servidor {
            ArrayList<String> c=cargarFlop();
            datos.setEstadoMesa("Turn");
            for(GestorClientes cliente: clientes){
+           if  (!datos.getJugador(cliente.getnCliente()-1).getEstado().equals("NoIr")&& !datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Fuera")){
             datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
+           }
             cliente.escribirFlop(c);
            }
        }
@@ -146,25 +194,38 @@ public class Servidor {
            ArrayList<String> c=cargarTurn();
            datos.setEstadoMesa("River");
            for(GestorClientes cliente: clientes){
-            datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
+               if  (!datos.getJugador(cliente.getnCliente()-1).getEstado().equals("NoIr")&& !datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Fuera")){
+            datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);
+               }
             cliente.escribirTurn(c);
-           }
+       }
        }
        
        if(comprobarPasar()&& datos.getEstadoMesa().equals("River")){
            ArrayList<String> c=cargarRiver();
            datos.setEstadoMesa("FinRonda");
            for(GestorClientes cliente: clientes){
+                if  (!datos.getJugador(cliente.getnCliente()-1).getEstado().equals("NoIr")&& !datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Fuera")){
             datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);   
+                }
             cliente.escribirRiver(c);
            }
+       }
+       for(GestorClientes cliente: clientes){
+       if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Pasar") && datos.getApuestaMinima()>datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta())
+                datos.getJugador(cliente.getnCliente()-1).setEstado("Jugando");
+       }
+       for(GestorClientes cliente: clientes){
+       if (datos.getJugador(cliente.getnCliente()-1).getDinero()<datos.getApuestaMinima()){
+                               datos.getJugador(cliente.getnCliente()-1).setEstado("AllInMin");
+                               datos.notificarVoltear(cliente.getnCliente());
+                }
        }
         
         for(GestorClientes cliente: clientes){
             String estado=datos.getJugador(cliente.getnCliente()-1).getEstado();
             
-            if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Pasar")&& datos.getApuestaMinima()>datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta())
-                datos.getJugador(cliente.getnCliente()-1).setEstado("Jugando");
+            
             
             e = new Evento(cliente.getnEvento(),"turno",estado);
             cliente.escribirEntrada(e);
@@ -173,6 +234,18 @@ public class Servidor {
             }
             
             else if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Pasar")){
+     
+            }
+            
+            else if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("AllIn")){
+                
+            }
+            
+            else if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("AllInMin")){
+     
+            }
+            
+            else if(datos.getJugador(cliente.getnCliente()-1).getEstado().equals("Fuera")){
      
             }
             
@@ -188,20 +261,29 @@ public class Servidor {
             
             apuesta= cliente.leerAccionCliente();
             if(apuesta.getMensaje().equals("Pasar")){
-                datos.pasar(apuesta);
+                datos.pasar(datos.getJugador(cliente.getnCliente()-1).getNombre());
                 datos.setEstadoJugador("Pasar",cliente.getnCliente()-1);
             }
             else if(apuesta.getMensaje().equals("NoIr")){
-                datos.noIr(apuesta);
+                datos.noIr(datos.getJugador(cliente.getnCliente()-1).getNombre());
                 datos.setEstadoJugador("NoIr",cliente.getnCliente()-1);
             }
             else if(apuesta.getMensaje().equals("Apostar")){
                 int cant=(Integer)apuesta.getInfo();
+                if (cant<datos.getApuestaMinima()){
+                    datos.getJugador(cliente.getnCliente()-1).setEstado("AllInMin");
+                    datos.notificarVoltear(cliente.getnCliente());
+                }
+                
+                if (cant==datos.getJugador(cliente.getnCliente()-1).getDinero()){
+                    datos.getJugador(cliente.getnCliente()-1).setEstado("AllIn");
+                    
+                }
                 
                 datos.setBote(cant-datos.getJugador(cliente.getnCliente()-1).getCantidadApuesta());
                 datos.setApuestaJugador(cliente.getnCliente(),cant);
                 datos.setApuestaMinima(cant);  
-                datos.apostar(apuesta);
+                datos.apostar(datos.getJugador(cliente.getnCliente()-1).getNombre());
                 datos.setEstadoJugador("Jugando",cliente.getnCliente()-1);
                 
             } 
@@ -215,6 +297,11 @@ public class Servidor {
             cliente.escribirTerminarTurno();
     }
         
+     }
+     
+     
+     public void resetearRonda(){
+         datos.resetearRonda();
      }
      
      
@@ -261,6 +348,15 @@ public class Servidor {
          }
          return cartas;
      }
+       
+       public void nuevaPartida(){
+           for(GestorClientes cliente: clientes){
+            cliente.escribirHabilitarNuevaPartida();
+            String nueva =cliente.leerNuevaPartida();
+       }
+           datos.nuevaPartida();
+           aux=true;
+       }
      
      public void agregarJugador(Object jug){
          datos.agregarJugadorMesa((Jugador)jug);
@@ -309,6 +405,7 @@ public class Servidor {
     private ArrayList<GestorClientes> clientes;
     private int numClientes;
     private static Servidor instancia = null;
+    private boolean aux= true;
     
     
 }

@@ -46,7 +46,7 @@ public class Mazo implements Serializable {
     //Atributos
     private ArrayList<Carta> mazo;
     String[] palos = {"Diamante","Trebol","Corazon","Bastos"};
-    String[] ranks={"2","3","4","5","6","7","8","9","10","J","Q","K","As"};
+    String[] ranks={"2","3","4","5","6","7","8","9","10","11","12","13","14"};
     int cantidadCartas=52;
     
 }

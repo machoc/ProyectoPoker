@@ -78,8 +78,11 @@ public class Cliente implements Runnable {
                  leerFlop(e);
                  leerManos(e);
                  leerTurn(e);
+                 leerFuera(e);
+                 leerReiniciarRonda(e);
                  leerRiver(e);
                  leerMensaje(e);
+                 leerNuevaPartida(e);
                  leerDeshabilitarPasar(e);
                  leerApuestas(e);
                  leerNombresJugadores(e);
@@ -204,6 +207,24 @@ public class Cliente implements Runnable {
         }
         
     }
+     
+     public void leerVoltearCartas(Evento e){
+        String voltear="";
+        try {                 
+               voltear= e.getMensaje();
+                
+                if(voltear.equals("Voltear") ){
+                
+                    jugador.voltearCartas(e.getInfo().toString(),String.valueOf(nCliente));
+
+                   voltear = "";
+                    }
+                }    
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+    }
     
      public void leerTerminarTurno(Evento e){
         String terminar="";
@@ -296,6 +317,107 @@ public class Cliente implements Runnable {
         }
           }
        
+       
+       public void leerFuera(Evento e){
+         String mensaje="";
+          try {   
+              mensaje=e.getMensaje();
+              if(mensaje.equals("Fuera")){
+                  String fuera=(String)e.getInfo();
+             
+                  if(fuera.equals("1") && nCliente.equals("1")){
+                      jugador.getLabApuesta1().setText("FUERA");
+                  }
+                  
+                   if(fuera.equals("2") && nCliente.equals("1")){
+                      jugador.getLabApuesta2().setText("FUERA");
+                  }
+                   
+                    if(fuera.equals("3") && nCliente.equals("1")){
+                      jugador.getLabApuesta3().setText("FUERA");
+                  }
+                    
+                     if(fuera.equals("1") && nCliente.equals("2")){
+                      jugador.getLabApuesta2().setText("FUERA");
+                  }
+                     
+                      if(fuera.equals("2") && nCliente.equals("2")){
+                      jugador.getLabApuesta1().setText("FUERA");
+                  }
+                      
+                       if(fuera.equals("3") && nCliente.equals("2")){
+                      jugador.getLabApuesta3().setText("FUERA");
+                  }
+                       
+                        if(fuera.equals("1") && nCliente.equals("3")){
+                      jugador.getLabApuesta2().setText("FUERA");
+                  }
+                        
+                         if(fuera.equals("2") && nCliente.equals("3")){
+                      jugador.getLabApuesta3().setText("FUERA");
+                  }
+                         
+                          if(fuera.equals("3") && nCliente.equals("3")){
+                      jugador.getLabApuesta1().setText("FUERA");
+                  }
+              } 
+              mensaje = "";
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+       
+        public void leerReiniciarRonda(Evento e){
+         String msj="";
+          try {   
+              msj=e.getMensaje();
+              if(msj.equals("NuevaRonda")){
+                  jugador.cargarCartasJugadores(e.getInfo().toString());
+                  Thread.sleep(7000);
+              if(!jugador.getLabApuesta1().getText().equals("FUERA"))
+                  jugador.getLabApuesta1().setText("0");
+              if(!jugador.getLabApuesta2().getText().equals("FUERA"))
+                  jugador.getLabApuesta2().setText("0");
+              if(!jugador.getLabApuesta3().getText().equals("FUERA"))
+                  jugador.getLabApuesta3().setText("0");
+              jugador.getLabBote().setText("0");
+              jugador.ocultarCartasJugadores();
+              jugador.ocultarCartasMesa(); 
+              JOptionPane.showMessageDialog(null,"Se ha Iniciado una Nueva Ronda");
+              }
+             
+              msj= "";
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+        
+        public void leerNuevaPartida(Evento e){
+         String msj="";
+          try {   
+              msj=e.getMensaje();
+              if(msj.equals("NuevaPartida")){
+                 jugador.habilitarNuevaPartida();
+                  jugador.getLabApuesta1().setText("0");
+             
+                  jugador.getLabApuesta2().setText("0");
+             
+                  jugador.getLabApuesta3().setText("0");
+                   jugador.getLabBote().setText("0");
+              jugador.ocultarCartasJugadores();
+              jugador.ocultarCartasMesa(); 
+              }
+             
+              msj= "";
+                }
+            catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+          }
+       
+       
        public int leerMinimo(){
            Evento e = null;
           int min=0;
@@ -354,7 +476,7 @@ public class Cliente implements Runnable {
                     turnoCliente = "";
                 }
                     else{
-                        
+                        turnoCliente = "";
                     }
                 }
                 
@@ -379,6 +501,8 @@ public class Cliente implements Runnable {
         }
         return estado;
    }
+     
+     
     
     
     public void pasar(){
@@ -422,6 +546,17 @@ public class Cliente implements Runnable {
         { ex.printStackTrace();
         }
    }
+      
+      public void nuevaPartida(){
+          Evento e = null;
+        try {
+          e = new Evento(Integer.parseInt(nCliente),"nuevaPartida",null);
+          salida.writeObject(e);
+        }
+        catch (Exception ex)
+        { ex.printStackTrace();
+        }
+      }
 
     
     public void cerrarCliente (){

@@ -44,7 +44,7 @@ public class Jugador implements Serializable{
     }
 
     public void setDinero(int dinero) {
-        this.dinero = dinero;
+        this.dinero += dinero;
     }
      public String getEstado() {
        return  estado;
@@ -58,9 +58,7 @@ public class Jugador implements Serializable{
     }
 
     public void setCantidadApuesta(int cant) { 
-        dinero-= cant - cantidadApuesta;
         this.cantidadApuesta = cant ;
-        
     }
     
     

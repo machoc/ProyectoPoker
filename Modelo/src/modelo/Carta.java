@@ -4,7 +4,7 @@ package modelo;
 import java.io.Serializable;
 
 
-public class Carta implements Serializable{
+public class Carta implements Serializable,Comparable<Carta>{
 
     public Carta(String palo, String valor) {
         this.palo = palo;
@@ -30,5 +30,17 @@ public class Carta implements Serializable{
     //Atributos
     private String palo;
     private String valor;
+
+    @Override
+    public int compareTo(Carta t) {
+            if (Integer.parseInt(valor) < Integer.parseInt(t.getValor())) {
+                return -1;
+            }
+            if (Integer.parseInt(valor) > Integer.parseInt(t.getValor())) {
+                return 1;
+            }
+            return 0;
+        }
+    
     
 }
